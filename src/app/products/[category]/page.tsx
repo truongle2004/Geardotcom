@@ -2,8 +2,8 @@
 
 import { addProductToCart } from '@/apis/cart';
 import {
-    getAllProductCategoryAPI,
-    getProductByCategoryAPI
+  getAllProductCategoryAPI,
+  getProductByCategoryAPI
 } from '@/apis/product';
 import DialogAuthAlert from '@/components/DialogAlert';
 import LoadingOverlay from '@/components/LoadingOverlay';

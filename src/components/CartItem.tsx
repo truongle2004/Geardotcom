@@ -12,7 +12,7 @@ import { Input } from './ui/input';
 interface CartItemProps {
   cartItem: CartItemType;
   isSelected: boolean;
-  isLoadingDelete: boolean;
+  isPendingDelete: boolean;
   handleSelectCart: (id: string, isChecked: boolean) => void;
   handleDeleteItem: (id: string) => void;
 }
@@ -20,7 +20,7 @@ interface CartItemProps {
 const CartItem: FC<CartItemProps> = ({
   cartItem,
   isSelected,
-  isLoadingDelete,
+  isPendingDelete: isLoadingDelete,
   handleDeleteItem,
   handleSelectCart
 }) => {

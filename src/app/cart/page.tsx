@@ -330,6 +330,7 @@ const Cart = () => {
                       <CartItem
                         key={item.id}
                         cartItem={item}
+                        isPendingDelete={isDeletingPending}
                         isSelected={selectedItems.has(item.id)}
                         handleSelectCart={handleSelectedCart}
                         handleDeleteItem={handleDeleteCartItem}
