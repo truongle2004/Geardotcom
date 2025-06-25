@@ -1,0 +1,124 @@
+'use client';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Bell, Menu, ShoppingCart, Zap } from 'lucide-react';
+import { ModeToggle } from './ModeToggle';
+import { useKeycloak } from '@react-keycloak/web';
+import { logout } from '@/utils/auth';
+import { useRouter } from 'next/navigation';
+
+const Header = () => {
+  const { keycloak } = useKeycloak();
+  const router = useRouter();
+
+  const handleSignIn = () => keycloak.login();
+  const handleSignOut = () => logout();
+  const handleRouteShoppingCart = () => router.push('/account/cart');
+  const handleRouteProfile = () => router.push('/account/profile');
+  const handleRouteProductPage = () => router.push('/products/all');
+
+  return (
+    <nav className="sticky top-0 z-50 backdrop-blur-md ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          {/* Mobile Menu */}
+          <div className="sm:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="bg-background">
+                <nav className="flex flex-col gap-4 mt-8">
+                  <a
+                    href="#"
+                    className="hover:underline text-foreground hover:text-foreground/80"
+                  >
+                    Dashboard
+                  </a>
+                  <a
+                    href="#"
+                    className="hover:underline text-foreground hover:text-foreground/80"
+                  >
+                    Projects
+                  </a>
+                  <a
+                    href="#"
+                    className="hover:underline text-foreground hover:text-foreground/80"
+                  >
+                    Calendar
+                  </a>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          {/* Logo */}
+          <div
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={handleRouteProductPage}
+          >
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Geardotcom
+            </span>
+          </div>
+
+          {/* Right Side */}
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon">
+              <Bell className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleRouteShoppingCart}
+            >
+              <ShoppingCart className="h-5 w-5" />
+            </Button>
+            <ModeToggle />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="@shadcn"
+                  />
+                  <AvatarFallback>SC</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleRouteProfile}>
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                {keycloak.authenticated ? (
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    Sign out
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={handleSignIn}>
+                    Sign in
+                  </DropdownMenuItem>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Header;

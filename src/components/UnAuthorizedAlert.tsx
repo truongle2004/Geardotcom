@@ -18,7 +18,7 @@ interface AddToCartModalProps {
   onClose: () => void;
 }
 
-const DialogAuthAlert: FC<AddToCartModalProps> = ({ isOpen, onClose }) => {
+const UnAuthorizedAlert: FC<AddToCartModalProps> = ({ isOpen, onClose }) => {
   const { toast } = useToast();
 
   const handleLogin = () => {
@@ -60,4 +60,4 @@ const DialogAuthAlert: FC<AddToCartModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default DialogAuthAlert;
+export default UnAuthorizedAlert;

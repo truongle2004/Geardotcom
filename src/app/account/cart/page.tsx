@@ -2,8 +2,8 @@
 
 import { deleteCartItem, getUserCartAPI } from '@/apis/cart';
 import CartItem from '@/components/CartItem';
+import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import LoadingOverlay from '@/components/LoadingOverlay';
-import Navbar from '@/components/Navbar';
 import NoDataAlert from '@/components/NoDataAlert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,9 +18,11 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import keycloak from '@/config/keycloakConfig';
 import { Constant } from '@/constant/constant';
 import { toastSuccess } from '@/utils/toastify';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import {
   ArrowRight,
   CreditCard,
@@ -46,12 +48,21 @@ const Cart = () => {
   const [priceFilter, setPriceFilter] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const [isOpenUnauthorizedAlert, setIsOpenUnauthorizedAlert] = useState(false);
+
+  const handleCloseUnauthorizedAlert = () => {
+    setIsOpenUnauthorizedAlert(false);
+  };
+
+  const handleOpenUnauthorizedAlert = () => {
+    setIsOpenUnauthorizedAlert(true);
+  };
 
   const {
     data,
     isLoading,
-    isError,
     error,
+    isError,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
@@ -63,7 +74,7 @@ const Cart = () => {
     initialPageParam: Constant.DEFAULT_PAGE_NUMBER,
     getNextPageParam: (lastPage, allPages) => {
       return !lastPage?.data?.last ? allPages.length + 1 : undefined;
-    }
+    },
   });
 
   const cartItemsData = useMemo(() => {
@@ -152,19 +163,22 @@ const Cart = () => {
   const selectedItemsCount = selectedItems.size;
 
   useEffect(() => {
-    if (error) {
-      console.log(error);
+    if (error && error instanceof AxiosError) {
+      handleOpenUnauthorizedAlert();
     }
   }, [error]);
 
   return (
     <>
+      <UnAuthorizedAlert
+        onClose={handleCloseUnauthorizedAlert}
+        isOpen={isOpenUnauthorizedAlert}
+      />
       {(isLoading || isDeletingPending) && <LoadingOverlay />}
-      <Navbar />
       {isError && cartItemsData.length === 0 ? (
         <NoDataAlert />
       ) : (
-        <section className="py-8 md:py-16 antialiased bg-gray-50 dark:bg-gray-900 min-h-screen">
+        <section className="py-8 md:py-16 antialiased min-h-screen">
           <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
             {/* Header */}
             <div className="mb-8">

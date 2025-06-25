@@ -3,7 +3,7 @@
 import { addProductToCart } from '@/apis/cart';
 import { getProductDetailAPI } from '@/apis/product';
 import LoadingOverlay from '@/components/LoadingOverlay';
-import Navbar from '@/components/Navbar';
+import Header from '@/components/Header';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -111,7 +111,7 @@ const ProductDetailPage = () => {
   return (
     <>
       {isLoading && <LoadingOverlay />}
-      <Navbar />
+      <Header />
       <div className="min-h-screen from-slate-50 to-white">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

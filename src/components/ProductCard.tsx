@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/card';
 import { RouteEnum } from '@/enums/enums';
 import type { Product } from '@/types';
+import { convertVND } from '@/utils/vnd';
 import { Eye, Monitor, ShoppingCart, Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -46,8 +47,8 @@ const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
               {product.productImage ? (
                 <Image
                   className="object-cover w-full h-full"
-                  src={product.productImage}
-                  alt={product.imageAlt || product.title || 'Product image'}
+                  src={product.images[0].src}
+                  alt={product.images[0].alt || product.title || 'Product image'}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                 />
@@ -145,9 +146,9 @@ const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
         {/* Price - pushed to bottom of flex container */}
         <div className="mt-auto mb-4">
           <div className="text-xl font-bold text-red-600">Liên hệ</div>
-          <div className="text-sm text-gray-500 line-through">
-            {product.price}
-          </div>
+          {/* <div className="text-sm text-gray-500 line-through"> */}
+            {convertVND(product.price)}
+          {/* </div> */}
         </div>
       </CardContent>
 

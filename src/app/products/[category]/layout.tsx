@@ -1,6 +1,6 @@
 'use client';
 import LoadingOverlay from '@/components/LoadingOverlay';
-import Navbar from '@/components/Navbar';
+import Header from '@/components/Header';
 import { useKeycloak } from '@react-keycloak/web';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
@@ -8,7 +8,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   if (!initialized) return <LoadingOverlay />;
   return (
     <>
-      <Navbar />
+      <Header />
       {children}
     </>
   );

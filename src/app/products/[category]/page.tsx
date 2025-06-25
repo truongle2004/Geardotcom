@@ -2,34 +2,38 @@
 
 import { addProductToCart } from '@/apis/cart';
 import {
-  getAllProductCategoryAPI,
-  getProductByCategoryAPI
+    getAllProductCategoryAPI,
+    getProductByCategoryAPI
 } from '@/apis/product';
-import DialogAuthAlert from '@/components/DialogAlert';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import ErrorAlert from '@/components/NoDataAlert';
 import ProductCard from '@/components/ProductCard';
 import { Button } from '@/components/ui/button';
+import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
 import { Product } from '@/types';
 import { stringUtils } from '@/utils/stringUtils';
 import { toastError, toastSuccess } from '@/utils/toastify';
-import { useKeycloak } from '@react-keycloak/web';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 
-import { useParams } from 'next/navigation';
+import keycloak from '@/config/keycloakConfig';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const ProductsPage = () => {
+    const router = useRouter()
   const [isOpenDialog, setIsOpenDialog] = useState(false);
-  const { keycloak } = useKeycloak();
   const [pageNumber, setPageNumber] = useState(Constant.DEFAULT_PAGE_NUMBER);
   const { category } = useParams<{ category: string }>();
   const [listProduct, setListProduct] = useState<Product[]>([]);
 
+  const handleChangeCategory = (handle: string) => {
+      router.push(`/products/${handle}`)
+  }
+
   const { data, isLoading, isSuccess, isLoadingError } = useQuery({
-    queryKey: ['collections', pageNumber, category],
+    queryKey: ['products', pageNumber, category],
     queryFn: () =>
       getProductByCategoryAPI(pageNumber, Constant.DEFAULT_PAGE_SIZE, category),
     enabled: !!category,
@@ -85,6 +89,7 @@ const ProductsPage = () => {
 
     await addProductToCartMutation({ productId, quantity });
   };
+
   const { data: categories } = useQuery({
     queryKey: ['collections'],
     queryFn: getAllProductCategoryAPI
@@ -92,7 +97,7 @@ const ProductsPage = () => {
 
   return (
     <>
-      <DialogAuthAlert isOpen={isOpenDialog} onClose={handleCloseDialog} />
+      <UnAuthorizedAlert isOpen={isOpenDialog} onClose={handleCloseDialog} />
       <div className="min-h-screen">
         {isLoading && <LoadingOverlay />}
         {isLoadingError ? (
@@ -112,7 +117,12 @@ const ProductsPage = () => {
 
               {(categories?.data?.length as number) > 0 &&
                 categories?.data?.map((category) => (
-                  <Button variant="outline" size="sm" key={category.id}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    key={category.id}
+                    onClick={() => handleChangeCategory(category.handle)}
+                  >
                     {category.name}
                   </Button>
                 ))}

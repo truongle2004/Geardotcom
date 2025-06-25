@@ -24,6 +24,7 @@ export const getProductByCategoryAPI = async (
   });
 };
 
+
 export const getProductDetailAPI = async (
   id: string
 ): Promise<ApiResponse<ProductDetail>> => {
