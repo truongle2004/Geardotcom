@@ -10,5 +10,12 @@ export enum SortDirection {
 
 export enum RouteEnum {
   DETAIL = '/detail',
-  COLLECTIONS = '/collections' // TOOD: need to change
+  PRODUCTS = '/products'
+}
+
+export enum SortOption {
+  A_TO_Z = 'asc',
+  Z_TO_A = 'desc',
+  PRICE_LOW_TO_HIGH = 'priceAsc',
+  PRICE_HIGH_TO_LOW = 'priceDesc'
 }

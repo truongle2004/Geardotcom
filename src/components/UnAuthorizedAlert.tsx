@@ -9,7 +9,6 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/dialog';
-import { useToast } from '@/hooks/use-toast';
 import { login } from '@/utils/auth';
 import type { FC } from 'react';
 
@@ -19,24 +18,11 @@ interface AddToCartModalProps {
 }
 
 const UnAuthorizedAlert: FC<AddToCartModalProps> = ({ isOpen, onClose }) => {
-  const { toast } = useToast();
-
   const handleLogin = () => {
-    toast({
-      title: 'Redirecting to login',
-      description: "You'll be taken to the login page shortly.",
-      duration: 3000
-    });
     login();
   };
 
   const handleCancel = () => {
-    toast({
-      title: 'Action cancelled',
-      description: 'You need to log in to add items to your cart.',
-      variant: 'destructive',
-      duration: 3000
-    });
     onClose();
   };
 

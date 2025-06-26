@@ -1,7 +1,6 @@
-'use client'
+'use client';
 import keycloak from '@/config/keycloakConfig';
 import { ReactKeycloakProvider } from '@react-keycloak/web';
-
 const KeycloakProviderWrapper = ({
   children
 }: {
@@ -13,8 +12,7 @@ const KeycloakProviderWrapper = ({
         authClient={keycloak}
         initOptions={{
           onLoad: 'check-sso',
-          checkLoginIframe: false,
-
+          checkLoginIframe: false
         }}
       >
         {children}

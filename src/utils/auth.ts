@@ -56,9 +56,13 @@ export const logout = () => {
 };
 
 export const isAuthenticated = () => {
-  return keycloak.authenticated;
+  if (keycloak) {
+    return keycloak.authenticated;
+  }
 };
 
 export const login = () => {
-  keycloak.login();
+  if (keycloak) {
+    keycloak.login();
+  }
 };
