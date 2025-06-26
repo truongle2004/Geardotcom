@@ -2,7 +2,8 @@
 import { addProductToCart } from '@/apis/cart';
 import {
   getAllProductCategoryAPI,
-  getProductByCategoryAPI
+  getAllVendor,
+  getProductAPI
 } from '@/apis/product';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import ErrorAlert from '@/components/NoDataAlert';
@@ -25,7 +26,7 @@ import {
 } from '@/components/ui/pagination';
 import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
-import { Category, Product } from '@/types';
+import { Category, Product, type Vendor } from '@/types';
 import { stringUtils } from '@/utils/stringUtils';
 import { toastError, toastSuccess } from '@/utils/toastify';
 import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
@@ -42,21 +43,29 @@ import {
   Tag,
   X
 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+const HEIGHT_DROP_DOWN = 'h-[300px]';
 
 const ProductsPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [pageNumber, setPageNumber] = useState(Constant.DEFAULT_PAGE_NUMBER);
   const [paginationMode, setPaginationMode] = useState<
     'loadmore' | 'pagination'
   >('pagination'); // Toggle between modes
-  const { category } = useParams<{ category: string }>();
+  const category = searchParams.get('category') || '';
+  const vendor = searchParams.get('vendor') || '';
   const [listProduct, setListProduct] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
+  const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+
   const [sortOption, setSortOption] = useState<{
     sort: string;
     direction: string;
@@ -65,7 +74,7 @@ const ProductsPage = () => {
   }>({
     sort: '',
     direction: '',
-    vendor: '',
+    vendor: vendor || '',
     category: category || ''
   });
 
@@ -79,6 +88,11 @@ const ProductsPage = () => {
     setListProduct([]); // Reset products when sorting changes
   };
 
+  const { data: listVendor } = useQuery({
+    queryKey: ['vendors'],
+    queryFn: () => getAllVendor()
+  });
+
   const onSelectedCategory = (categoryItem: Category) => {
     setSelectedCategory(categoryItem);
     const sort = {
@@ -88,6 +102,8 @@ const ProductsPage = () => {
     setSortOption(sort);
     setPageNumber(Constant.DEFAULT_PAGE_NUMBER);
     setListProduct([]); // Reset products when category changes
+    params.set('category', categoryItem.handle);
+    router.push(`/products?${params.toString()}`);
   };
 
   const clearCategoryFilter = () => {
@@ -113,7 +129,7 @@ const ProductsPage = () => {
   const { data, isLoading, isSuccess, isLoadingError } = useQuery({
     queryKey: ['products', pageNumber, sortOption],
     queryFn: () =>
-      getProductByCategoryAPI({
+      getProductAPI({
         page: pageNumber,
         size: Constant.DEFAULT_PAGE_SIZE,
         category: sortOption.category,
@@ -149,7 +165,14 @@ const ProductsPage = () => {
         setListProduct(data.data.content as unknown as Product[]);
       }
     }
-  }, [data?.data?.content, isSuccess, pageNumber, paginationMode]);
+  }, [
+    data?.data?.content,
+    isSuccess,
+    pageNumber,
+    paginationMode,
+    vendor,
+    category
+  ]);
 
   const handleLoadmore = () => {
     if (
@@ -253,7 +276,7 @@ const ProductsPage = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [category]);
+  }, [category, vendor]);
 
   const getSortIcon = () => {
     if (!sortOption.sort) return <ArrowUpDown className="w-4 h-4" />;
@@ -275,6 +298,19 @@ const ProductsPage = () => {
     const label = sortLabels[sortOption.sort] || sortOption.sort;
     const direction = sortOption.direction === 'asc' ? 'tăng dần' : 'giảm dần';
     return `${label} ${direction}`;
+  };
+
+  const onSeletedVendor = (vendor: Vendor) => {
+    setSelectedVendor(vendor);
+    const sort = {
+      ...sortOption,
+      vendor: vendor.handle
+    };
+    setSortOption(sort);
+    setPageNumber(Constant.DEFAULT_PAGE_NUMBER);
+    setListProduct([]);
+    params.set('vendor', vendor.handle);
+    router.push(`/products?${params.toString()}`);
   };
 
   return (
@@ -317,7 +353,7 @@ const ProductsPage = () => {
                       <ChevronDown className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56">
+                  <DropdownMenuContent className={`w-56 ${HEIGHT_DROP_DOWN}`}>
                     {categories?.data?.map((item) => (
                       <DropdownMenuItem
                         key={item.id}
@@ -382,6 +418,31 @@ const ProductsPage = () => {
                   </DropdownMenuContent>
                 </DropdownMenu>
 
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="flex items-center gap-2"
+                    >
+                      <Tag className="w-4 h-4" />
+                      {selectedVendor ? selectedVendor.name : 'Nhà cung cấp'}
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className={`w-56 ${HEIGHT_DROP_DOWN}`}>
+                    {listVendor?.data.map((vendor) => (
+                      <DropdownMenuItem
+                        key={vendor.id}
+                        onClick={() => onSeletedVendor(vendor)}
+                        className="cursor-pointer"
+                      >
+                        <Tag className="w-4 h-4 mr-2" />
+                        {vendor.name}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 {/* Pagination Mode Toggle */}
                 <Button
                   variant="outline"
@@ -403,7 +464,7 @@ const ProductsPage = () => {
               </div>
 
               {/* Active Filters */}
-              {(selectedCategory || sortOption.sort) && (
+              {(selectedCategory || selectedVendor || sortOption.sort) && (
                 <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
                   <span className="text-sm font-medium">Đang lọc:</span>
 
@@ -411,6 +472,19 @@ const ProductsPage = () => {
                     <div className="flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
                       <Tag className="w-3 h-3" />
                       {selectedCategory.name}
+                      <button
+                        onClick={clearCategoryFilter}
+                        className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+
+                  {selectedVendor && (
+                    <div className="flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+                      <Tag className="w-3 h-3" />
+                      {selectedVendor.name}
                       <button
                         onClick={clearCategoryFilter}
                         className="ml-1 hover:bg-blue-200 rounded-full p-0.5"

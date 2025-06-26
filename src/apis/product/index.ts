@@ -3,31 +3,37 @@ import type {
   Category,
   Product,
   ProductDetail,
-  ApiResponse
+  ApiResponse,
+  Vendor
 } from '@/types';
 import axiosInstance from '@/utils/axiosInstance';
 import { ApiEnum, SortDirection } from '@/enums/enums';
 
-export const getProductByCategoryAPI = async ({
+const root = 'sale/products';
+
+export const getProductAPI = async ({
   page,
   size,
   sort,
   category,
-  direction
+  direction,
+  vendor
 }: {
   page: number;
   size: number;
   sort?: string;
   category?: string;
   direction?: string;
+  vendor?: string;
 }): Promise<ApiResponse<PaginatedResponse<Product>>> => {
-  return await axiosInstance.get(`${ApiEnum.API_V1}/sale/products`, {
+  return await axiosInstance.get(`${ApiEnum.API_V1}/${root}`, {
     params: {
       page,
       size,
       sort,
       category,
-      direction
+      direction,
+      vendor
     }
   });
 };
@@ -35,12 +41,15 @@ export const getProductByCategoryAPI = async ({
 export const getProductDetailAPI = async (
   id: string
 ): Promise<ApiResponse<ProductDetail>> => {
-  return await axiosInstance.get(`${ApiEnum.API_V1}/sale/products/${id}`);
+  return await axiosInstance.get(`${ApiEnum.API_V1}/${root}/${id}`);
 };
-
 
 export const getAllProductCategoryAPI = async (): Promise<
   ApiResponse<Category[]>
 > => {
-  return await axiosInstance.get(`${ApiEnum.API_V1}/sale/products/categories`);
+  return await axiosInstance.get(`${ApiEnum.API_V1}/${root}/categories`);
+};
+
+export const getAllVendor = async (): Promise<ApiResponse<Vendor[]>> => {
+  return await axiosInstance.get(`${ApiEnum.API_V1}/${root}/vendors`);
 };

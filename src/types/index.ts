@@ -80,3 +80,10 @@ export interface UserInfo {
   family_name?: string;
   preferred_username?: string;
 }
+
+export interface Vendor {
+  id: string;
+  name: string;
+  handle: string;
+  description: string;
+}

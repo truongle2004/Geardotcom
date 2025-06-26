@@ -23,7 +23,7 @@ const Header = () => {
   const handleSignOut = () => logout();
   const handleRouteShoppingCart = () => router.push('/account/cart');
   const handleRouteProfile = () => router.push('/account/profile');
-  const handleRouteProductPage = () => router.push('/products/all');
+  const handleRouteProductPage = () => router.push('/products');
 
   return (
     <nav className="sticky top-0 z-50 backdrop-blur-md ">
