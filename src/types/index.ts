@@ -8,6 +8,10 @@ export interface ApiResponse<T> {
 export interface PaginatedResponse<T> {
   content: T;
   totalPages: number;
+  totalElements: number;
+  size: number;
+  number: number;
+  first: boolean;
   last: boolean;
 }
 
@@ -21,8 +25,6 @@ export interface CartItemType {
   imageSrc: string;
   imageAlt: string;
 }
-
-
 
 export interface Product {
   id: string;
@@ -69,7 +71,6 @@ export interface KeycloakTokenResponse {
   session_state: string;
   scope: string;
 }
-
 
 export interface UserInfo {
   sub: string;

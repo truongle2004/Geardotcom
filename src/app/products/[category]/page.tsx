@@ -1,5 +1,4 @@
 'use client';
-
 import { addProductToCart } from '@/apis/cart';
 import {
   getAllProductCategoryAPI,
@@ -15,6 +14,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from '@/components/ui/pagination';
 import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
 import { Category, Product } from '@/types';
@@ -41,6 +49,9 @@ const ProductsPage = () => {
   const router = useRouter();
   const [isOpenDialog, setIsOpenDialog] = useState(false);
   const [pageNumber, setPageNumber] = useState(Constant.DEFAULT_PAGE_NUMBER);
+  const [paginationMode, setPaginationMode] = useState<
+    'loadmore' | 'pagination'
+  >('pagination'); // Toggle between modes
   const { category } = useParams<{ category: string }>();
   const [listProduct, setListProduct] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -123,13 +134,22 @@ const ProductsPage = () => {
 
   useEffect(() => {
     if (isSuccess && data?.data?.content) {
-      if (pageNumber === 1) {
-        setListProduct(data.data.content);
+      if (paginationMode === 'loadmore') {
+        // Load more mode: append new products
+        if (pageNumber === 1) {
+          setListProduct(data.data.content as unknown as Product[]);
+        } else {
+          setListProduct((prev) => [
+            ...prev,
+            ...(data.data.content as unknown as Product[])
+          ]);
+        }
       } else {
-        setListProduct((prev) => [...prev, ...data.data.content]);
+        // Pagination mode: replace products
+        setListProduct(data.data.content as unknown as Product[]);
       }
     }
-  }, [data?.data?.content, isSuccess, pageNumber]);
+  }, [data?.data?.content, isSuccess, pageNumber, paginationMode]);
 
   const handleLoadmore = () => {
     if (
@@ -138,6 +158,65 @@ const ProductsPage = () => {
     ) {
       setPageNumber(pageNumber + 1);
     }
+  };
+
+  // Pagination handlers
+  const handlePageChange = (page: number) => {
+    setPageNumber(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePreviousPage = () => {
+    if (pageNumber > 1) {
+      handlePageChange(pageNumber - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (data?.data?.totalPages && pageNumber < data.data.totalPages) {
+      handlePageChange(pageNumber + 1);
+    }
+  };
+
+  // Generate pagination numbers
+  const generatePaginationNumbers = () => {
+    const totalPages = data?.data?.totalPages || 1;
+    const current = pageNumber;
+    const pages: (number | string)[] = [];
+
+    if (totalPages <= 7) {
+      // Show all pages if total is 7 or less
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      // Complex pagination logic
+      if (current <= 4) {
+        pages.push(1, 2, 3, 4, 5, '...', totalPages);
+      } else if (current >= totalPages - 3) {
+        pages.push(
+          1,
+          '...',
+          totalPages - 4,
+          totalPages - 3,
+          totalPages - 2,
+          totalPages - 1,
+          totalPages
+        );
+      } else {
+        pages.push(
+          1,
+          '...',
+          current - 1,
+          current,
+          current + 1,
+          '...',
+          totalPages
+        );
+      }
+    }
+
+    return pages;
   };
 
   const { mutateAsync: addProductToCartMutation } = useMutation({
@@ -302,12 +381,31 @@ const ProductsPage = () => {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+
+                {/* Pagination Mode Toggle */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const newMode =
+                      paginationMode === 'pagination'
+                        ? 'loadmore'
+                        : 'pagination';
+                    setPaginationMode(newMode);
+                    setPageNumber(1);
+                    setListProduct([]);
+                  }}
+                >
+                  {paginationMode === 'pagination'
+                    ? 'Chế độ tải thêm'
+                    : 'Chế độ phân trang'}
+                </Button>
               </div>
 
               {/* Active Filters */}
               {(selectedCategory || sortOption.sort) && (
                 <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
-                  <span className="text-sm  font-medium">Đang lọc:</span>
+                  <span className="text-sm font-medium">Đang lọc:</span>
 
                   {selectedCategory && (
                     <div className="flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
@@ -342,8 +440,9 @@ const ProductsPage = () => {
             {data?.data && (
               <div className="flex items-center justify-between mb-6">
                 <p className="text-gray-600">
-                  Hiển thị {listProduct.length} / {data.data.totalElements} sản
-                  phẩm
+                  {paginationMode === 'pagination'
+                    ? `Hiển thị ${(pageNumber - 1) * Constant.DEFAULT_PAGE_SIZE + 1}-${Math.min(pageNumber * Constant.DEFAULT_PAGE_SIZE, data.data.totalElements)} / ${data.data.totalElements} sản phẩm`
+                    : `Hiển thị ${listProduct.length} / ${data.data.totalElements} sản phẩm`}
                 </p>
                 {data.data.totalPages > 1 && (
                   <p className="text-sm text-gray-500">
@@ -355,9 +454,9 @@ const ProductsPage = () => {
 
             {/* Products Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {listProduct?.map((product) => (
+              {listProduct?.map((product, index) => (
                 <ProductCard
-                  key={product.id}
+                  key={`${product.id}-${index}`}
                   product={product}
                   handleAddToCart={handleAddProductToCart}
                 />
@@ -368,29 +467,78 @@ const ProductsPage = () => {
             {listProduct.length === 0 && !isLoading && (
               <div className="text-center py-12">
                 <Grid className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="text-lg font-medium  mb-2">
                   Không tìm thấy sản phẩm
                 </h3>
-                <p className="text-gray-600">
-                  Thử thay đổi bộ lọc hoặc tìm kiếm khác
-                </p>
+                <p>Thử thay đổi bộ lọc hoặc tìm kiếm khác</p>
               </div>
             )}
 
-            {/* Load More */}
-            {data?.data && pageNumber < data.data.totalPages && (
-              <div className="flex justify-center mt-12">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  onClick={handleLoadmore}
-                  disabled={isLoading}
-                  className="min-w-[200px]"
-                >
-                  {isLoading ? 'Đang tải...' : 'Xem thêm sản phẩm'}
-                </Button>
-              </div>
-            )}
+            {/* Load More Button (only in loadmore mode) */}
+            {paginationMode === 'loadmore' &&
+              data?.data &&
+              pageNumber < data.data.totalPages && (
+                <div className="flex justify-center mt-12">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    onClick={handleLoadmore}
+                    disabled={isLoading}
+                    className="min-w-[200px]"
+                  >
+                    {isLoading ? 'Đang tải...' : 'Xem thêm sản phẩm'}
+                  </Button>
+                </div>
+              )}
+
+            {/* Pagination (only in pagination mode) */}
+            {paginationMode === 'pagination' &&
+              data?.data &&
+              data.data.totalPages > 1 && (
+                <div className="flex justify-center mt-12">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={handlePreviousPage}
+                          className={
+                            pageNumber === 1
+                              ? 'pointer-events-none opacity-50'
+                              : 'cursor-pointer'
+                          }
+                        />
+                      </PaginationItem>
+
+                      {generatePaginationNumbers().map((page, index) => (
+                        <PaginationItem key={index}>
+                          {page === '...' ? (
+                            <PaginationEllipsis />
+                          ) : (
+                            <PaginationLink
+                              onClick={() => handlePageChange(page as number)}
+                              isActive={page === pageNumber}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          )}
+                        </PaginationItem>
+                      ))}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={handleNextPage}
+                          className={
+                            pageNumber === data?.data?.totalPages
+                              ? 'pointer-events-none opacity-50'
+                              : 'cursor-pointer'
+                          }
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
           </div>
         )}
       </div>
