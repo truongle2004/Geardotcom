@@ -10,10 +10,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Bell, Menu, ShoppingCart, Zap } from 'lucide-react';
-import { ModeToggle } from './ModeToggle';
+import { ModeToggle } from '@/components/ModeToggle';
 import { useKeycloak } from '@react-keycloak/web';
 import { logout } from '@/utils/auth';
 import { useRouter } from 'next/navigation';
+import SubHeader from '@/components/Subheader';
 
 const Header = () => {
   const { keycloak } = useKeycloak();
@@ -26,7 +27,7 @@ const Header = () => {
   const handleRouteProductPage = () => router.push('/products');
 
   return (
-    <nav className="sticky top-0 z-50 backdrop-blur-md ">
+    <nav className="sticky top-0 z-50 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Mobile Menu */}
@@ -117,6 +118,7 @@ const Header = () => {
           </div>
         </div>
       </div>
+      <SubHeader />
     </nav>
   );
 };

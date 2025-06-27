@@ -70,8 +70,6 @@ img {
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
@@ -79,4 +77,8 @@ img {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.subheader-item {
+  @apply hover:text-red-400 transition duration-300 ease-in-out cursor-pointer;
 }
