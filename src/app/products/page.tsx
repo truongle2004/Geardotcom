@@ -58,9 +58,6 @@ const ProductsPage = () => {
   const [pageNumber, setPageNumber] = useState(
     Number(searchParams.get('page')) || Constant.DEFAULT_PAGE_NUMBER
   );
-  const [paginationMode, setPaginationMode] = useState<
-    'loadmore' | 'pagination'
-  >('pagination');
   const category = searchParams.get('category') || '';
   const vendor = searchParams.get('vendor') || '';
 
@@ -248,17 +245,13 @@ const ProductsPage = () => {
 
   useEffect(() => {
     if (isSuccess && data?.data?.content) {
-      if (paginationMode === 'loadmore') {
-        if (pageNumber === 1) {
-          setListProduct(data.data.content as unknown as Product[]);
-        } else {
-          setListProduct((prev) => [
-            ...prev,
-            ...(data.data.content as unknown as Product[])
-          ]);
-        }
-      } else {
+      if (pageNumber === 1) {
         setListProduct(data.data.content as unknown as Product[]);
+      } else {
+        setListProduct((prev) => [
+          ...prev,
+          ...(data.data.content as unknown as Product[])
+        ]);
       }
 
       if (
@@ -277,14 +270,7 @@ const ProductsPage = () => {
         setTempPriceRange([paddedMin, paddedMax]);
       }
     }
-  }, [
-    data?.data?.content,
-    isSuccess,
-    pageNumber,
-    paginationMode,
-    vendor,
-    category
-  ]);
+  }, [data?.data?.content, isSuccess, pageNumber, vendor, category]);
 
   // Initialize filters from URL params
   useEffect(() => {
