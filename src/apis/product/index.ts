@@ -1,13 +1,13 @@
+import { ApiEnum } from '@/enums/enums';
 import type {
-  PaginatedResponse,
+  ApiResponse,
   Category,
+  PaginatedResponse,
   Product,
   ProductDetail,
-  ApiResponse,
   Vendor
 } from '@/types';
 import axiosInstance from '@/utils/axiosInstance';
-import { ApiEnum, SortDirection } from '@/enums/enums';
 
 const root = 'sale/products';
 
@@ -17,7 +17,9 @@ export const getProductAPI = async ({
   sort,
   category,
   direction,
-  vendor
+  vendor,
+  minPrice,
+  maxPrice
 }: {
   page: number;
   size: number;
@@ -25,6 +27,8 @@ export const getProductAPI = async ({
   category?: string;
   direction?: string;
   vendor?: string;
+  minPrice?: number;
+  maxPrice?: number;
 }): Promise<ApiResponse<PaginatedResponse<Product>>> => {
   return await axiosInstance.get(`${ApiEnum.API_V1}/${root}`, {
     params: {
@@ -33,7 +37,9 @@ export const getProductAPI = async ({
       sort,
       category,
       direction,
-      vendor
+      vendor,
+      min: minPrice,
+      max: maxPrice
     }
   });
 };
