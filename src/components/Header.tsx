@@ -1,23 +1,23 @@
 'use client';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ModeToggle } from '@/components/ModeToggle';
+import SubHeader from '@/components/Subheader';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Bell, Menu, ShoppingCart, Zap } from 'lucide-react';
-import { ModeToggle } from '@/components/ModeToggle';
-import { useKeycloak } from '@react-keycloak/web';
+import useUserStore from '@/store/userStore';
 import { logout } from '@/utils/auth';
+import { useKeycloak } from '@react-keycloak/web';
+import { Bell, Menu, ShoppingCart, Zap, User } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import SubHeader from '@/components/Subheader';
 
 const Header = () => {
   const { keycloak } = useKeycloak();
+  const { userInfo } = useUserStore();
   const router = useRouter();
 
   const handleSignIn = () => keycloak.login();
@@ -91,26 +91,33 @@ const Header = () => {
             <ModeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar className="cursor-pointer">
-                  <AvatarImage
-                    src="https://github.com/shadcn.png"
-                    alt="@shadcn"
-                  />
-                  <AvatarFallback>SC</AvatarFallback>
-                </Avatar>
+                <div className="flex items-center gap-2 cursor-pointer border border-gray-300 rounded-md px-1 py-1">
+                  <User className="w-5 h-5" />
+                  {userInfo?.preferred_username ? (
+                    <div>
+                      <p className="text-sm">xin chao</p>
+                      <p className="text-sm">{userInfo.preferred_username}</p>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-sm">Đăng nhập</p>
+                    </div>
+                  )}
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleRouteProfile}>
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
                 {keycloak.authenticated ? (
-                  <DropdownMenuItem onClick={handleSignOut}>
-                    Sign out
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuItem onClick={handleRouteProfile}>
+                      Thông tin tài khoản
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      Đăng xuất
+                    </DropdownMenuItem>
+                  </>
                 ) : (
                   <DropdownMenuItem onClick={handleSignIn}>
-                    Sign in
+                    Đăng nhập
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>

@@ -1,13 +1,13 @@
 'use client'
 
 import React, { useState, useMemo } from 'react'
-import { 
-  Package, 
-  Truck, 
-  CheckCircle, 
-  XCircle, 
-  Clock, 
-  Search, 
+import {
+  Package,
+  Truck,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Search,
   Filter,
   Eye,
   RotateCcw,
@@ -18,12 +18,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select'
 import {
   Table,
@@ -124,14 +124,14 @@ const OrderHistoryPage: React.FC = () => {
   // Filter and search orders
   const filteredOrders = useMemo(() => {
     return orders.filter(order => {
-      const matchesSearch = 
+      const matchesSearch =
         order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        order.items.some(item => 
+        order.items.some(item =>
           item.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
-      
+
       const matchesStatus = statusFilter === 'all' || order.status === statusFilter
-      
+
       return matchesSearch && matchesStatus
     })
   }, [orders, searchTerm, statusFilter])
@@ -228,8 +228,8 @@ const OrderHistoryPage: React.FC = () => {
               <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
               <p className="text-gray-500">
-                {searchTerm || statusFilter !== 'all' 
-                  ? "No orders match your current filters" 
+                {searchTerm || statusFilter !== 'all'
+                  ? "No orders match your current filters"
                   : "You haven't placed any orders yet"}
               </p>
             </div>
@@ -250,7 +250,7 @@ const OrderHistoryPage: React.FC = () => {
                   {filteredOrders.map((order) => {
                     const statusConfig = getStatusConfig(order.status)
                     const StatusIcon = statusConfig.icon
-                    
+
                     return (
                       <TableRow key={order.id}>
                         <TableCell>
@@ -294,8 +294,8 @@ const OrderHistoryPage: React.FC = () => {
                           <div className="flex gap-2">
                             <Dialog>
                               <DialogTrigger asChild>
-                                <Button 
-                                  variant="outline" 
+                                <Button
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => setSelectedOrder(order)}
                                 >
@@ -322,7 +322,7 @@ const OrderHistoryPage: React.FC = () => {
                                         </Badge>
                                       )}
                                     </div>
-                                    
+
                                     {/* Items */}
                                     <div>
                                       <h4 className="font-medium mb-3">Items Ordered</h4>
@@ -338,13 +338,13 @@ const OrderHistoryPage: React.FC = () => {
                                         ))}
                                       </div>
                                     </div>
-                                    
+
                                     {/* Shipping Address */}
                                     <div>
                                       <h4 className="font-medium mb-2">Shipping Address</h4>
                                       <p className="text-gray-600">{selectedOrder.shippingAddress}</p>
                                     </div>
-                                    
+
                                     {/* Order Total */}
                                     <div className="border-t pt-4">
                                       <div className="flex justify-between items-center text-lg font-semibold">
@@ -356,7 +356,7 @@ const OrderHistoryPage: React.FC = () => {
                                 )}
                               </DialogContent>
                             </Dialog>
-                            
+
                             {order.status === 'delivered' && (
                               <Button variant="outline" size="sm">
                                 <RotateCcw className="h-4 w-4 mr-1" />

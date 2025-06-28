@@ -62,7 +62,7 @@ export const isAuthenticated = () => {
 };
 
 export const login = () => {
-  if (keycloak) {
+  if (keycloak !== undefined && keycloak.authenticated === false) {
     keycloak.login();
   }
 };

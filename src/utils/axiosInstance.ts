@@ -2,6 +2,7 @@ import axios, { HttpStatusCode } from 'axios';
 import { getAccessToken, getUserInfo, logout } from './auth';
 import { stringUtils } from './stringUtils';
 import type { UserInfo } from '@/types';
+import useUserStore from '@/store/userStore';
 
 let cachedToken: string | null = null;
 let cachedUserInfo: UserInfo | null = null;
@@ -18,13 +19,13 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     try {
-      if (cachedUserInfo === null) cachedUserInfo = await getUserInfo();
-      if (
-        cachedUserInfo !== null &&
-        stringUtils.isNotNullAndEmpty(cachedUserInfo.sub)
-      ) {
-        config.headers['X-USER-ID'] = cachedUserInfo.sub;
-      }
+      // if (cachedUserInfo === null) cachedUserInfo = await getUserInfo();
+      // if (
+      //   cachedUserInfo !== null &&
+      //   stringUtils.isNotNullAndEmpty(cachedUserInfo.sub)
+      // ) {
+      //   config.headers['X-USER-ID'] = cachedUserInfo.sub;
+      // }
 
       if (cachedToken === null) cachedToken = await getAccessToken();
       if (cachedToken !== null && stringUtils.isNotNullAndEmpty(cachedToken)) {
