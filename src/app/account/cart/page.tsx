@@ -74,7 +74,7 @@ const Cart = () => {
     initialPageParam: Constant.DEFAULT_PAGE_NUMBER,
     getNextPageParam: (lastPage, allPages) => {
       return !lastPage?.data?.last ? allPages.length + 1 : undefined;
-    },
+    }
   });
 
   const cartItemsData = useMemo(() => {
@@ -185,11 +185,11 @@ const Cart = () => {
               <div className="flex items-center gap-3 mb-4">
                 <ShoppingCart className="h-8 w-8 text-primary" />
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
-                  Shopping Cart
+                  Giỏ Hàng
                 </h2>
                 {cartItemsData!.length > 0 && (
                   <Badge variant="secondary" className="ml-2">
-                    {cartItemsData!.length} items
+                    {cartItemsData!.length} sản phẩm
                   </Badge>
                 )}
               </div>
@@ -202,7 +202,7 @@ const Cart = () => {
                     <div className="relative flex-1">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <Input
-                        placeholder="Search products..."
+                        placeholder="Tìm kiếm sản phẩm..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-10"
@@ -216,9 +216,9 @@ const Cart = () => {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="name">Name</SelectItem>
-                          <SelectItem value="price">Price</SelectItem>
-                          <SelectItem value="quantity">Quantity</SelectItem>
+                          <SelectItem value="name">Tên</SelectItem>
+                          <SelectItem value="price">Giá</SelectItem>
+                          <SelectItem value="quantity">Số lượng</SelectItem>
                         </SelectContent>
                       </Select>
 
@@ -243,7 +243,7 @@ const Cart = () => {
                       className="shrink-0"
                     >
                       <Filter className="h-4 w-4 mr-2" />
-                      Filters
+                      Bộ lọc
                     </Button>
                   </div>
 
@@ -253,7 +253,7 @@ const Cart = () => {
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
                           <label className="text-sm font-medium mb-2 block">
-                            Price Range
+                            Khoảng giá
                           </label>
                           <Select
                             value={priceFilter}
@@ -263,11 +263,17 @@ const Cart = () => {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="all">All Prices</SelectItem>
-                              <SelectItem value="0-25">$0 - $25</SelectItem>
-                              <SelectItem value="25-50">$25 - $50</SelectItem>
-                              <SelectItem value="50-100">$50 - $100</SelectItem>
-                              <SelectItem value="100">$100+</SelectItem>
+                              <SelectItem value="all">Tất cả giá</SelectItem>
+                              <SelectItem value="0-25">
+                                0đ - 625.000đ
+                              </SelectItem>
+                              <SelectItem value="25-50">
+                                625.000đ - 1.250.000đ
+                              </SelectItem>
+                              <SelectItem value="50-100">
+                                1.250.000đ - 2.500.000đ
+                              </SelectItem>
+                              <SelectItem value="100">2.500.000đ+</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
@@ -294,15 +300,15 @@ const Cart = () => {
                         }
                       />
                       <span className="text-sm font-medium">
-                        Select all ({cartItemsData!.length} items)
+                        Chọn tất cả ({cartItemsData!.length} sản phẩm)
                       </span>
                     </div>
 
                     {selectedItemsCount > 0 && (
                       <div className="flex items-center gap-4">
                         <div className="text-sm text-gray-600">
-                          {selectedItemsCount} selected • $
-                          {selectedItemsTotal.toLocaleString()}
+                          {selectedItemsCount} đã chọn •{' '}
+                          {selectedItemsTotal.toLocaleString('vi-VN')}đ
                         </div>
                         <Button
                           variant="destructive"
@@ -310,7 +316,7 @@ const Cart = () => {
                           onClick={handleDeleteSelected}
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Delete Selected
+                          Xóa đã chọn
                         </Button>
                       </div>
                     )}
@@ -327,13 +333,13 @@ const Cart = () => {
                     <CardContent>
                       <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                        Your cart is empty
+                        Giỏ hàng của bạn đang trống
                       </h3>
                       <p className="text-gray-500 mb-4">
-                        Add some products to get started
+                        Thêm sản phẩm để bắt đầu mua sắm
                       </p>
                       <Button>
-                        Continue Shopping
+                        Tiếp tục mua sắm
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </CardContent>
@@ -356,7 +362,7 @@ const Cart = () => {
                       {isFetchingNextPage && (
                         <div className="flex items-center gap-2 text-gray-500">
                           <Loader2 className="h-4 w-4 animate-spin" />
-                          <span>Loading more items...</span>
+                          <span>Đang tải thêm sản phẩm...</span>
                         </div>
                       )}
                     </div>
@@ -370,27 +376,31 @@ const Cart = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-xl">
                       <CreditCard className="h-5 w-5" />
-                      Order Summary
+                      Tóm tắt đơn hàng
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">
-                          Items ({selectedItemsCount})
+                          Sản phẩm ({selectedItemsCount})
                         </span>
                         <span className="font-medium">
-                          ${selectedItemsTotal.toLocaleString()}
+                          {selectedItemsTotal.toLocaleString('vi-VN')}đ
                         </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Shipping</span>
-                        <span className="font-medium text-green-600">Free</span>
+                        <span className="text-sm text-gray-500">
+                          Phí vận chuyển
+                        </span>
+                        <span className="font-medium text-green-600">
+                          Miễn phí
+                        </span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Tax</span>
+                        <span className="text-sm text-gray-500">Thuế</span>
                         <span className="font-medium">
-                          ${(selectedItemsTotal * 0.08).toFixed(2)}
+                          {(selectedItemsTotal * 0.08).toLocaleString('vi-VN')}đ
                         </span>
                       </div>
                     </div>
@@ -398,9 +408,9 @@ const Cart = () => {
                     <Separator />
 
                     <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold">Total</span>
+                      <span className="text-lg font-bold">Tổng cộng</span>
                       <span className="text-lg font-bold">
-                        ${(selectedItemsTotal * 1.08).toLocaleString()}
+                        {(selectedItemsTotal * 1.08).toLocaleString('vi-VN')}đ
                       </span>
                     </div>
 
@@ -410,13 +420,13 @@ const Cart = () => {
                       disabled={selectedItemsCount === 0}
                     >
                       <CreditCard className="mr-2 h-4 w-4" />
-                      Proceed to Checkout ({selectedItemsCount})
+                      Tiến hành thanh toán ({selectedItemsCount})
                     </Button>
 
                     <div className="flex items-center justify-center gap-2">
-                      <span className="text-sm text-gray-500">or</span>
+                      <span className="text-sm text-gray-500">hoặc</span>
                       <Button variant="link" className="p-0 h-auto">
-                        Continue Shopping
+                        Tiếp tục mua sắm
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     </div>
@@ -433,7 +443,7 @@ const Cart = () => {
                           htmlFor="voucher"
                           className="text-sm font-medium"
                         >
-                          Promo Code or Gift Card
+                          Mã khuyến mãi hoặc thẻ quà tặng
                         </label>
                       </div>
                       <div className="flex gap-2">
@@ -442,12 +452,12 @@ const Cart = () => {
                           id="voucher"
                           value={voucherCode}
                           onChange={(e) => setVoucherCode(e.target.value)}
-                          placeholder="Enter code"
+                          placeholder="Nhập mã"
                           className="flex-1"
                         />
                         <Button variant="outline">
                           <Tag className="h-4 w-4 mr-2" />
-                          Apply
+                          Áp dụng
                         </Button>
                       </div>
                     </div>

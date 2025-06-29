@@ -201,9 +201,9 @@ const EcommerceProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen  py-8">
+    <div className="min-h-screen py-8">
       <div className="max-w-6xl mx-auto px-4 space-y-6">
-        {/* Header Card */}
+        {/* Thẻ Tiêu đề */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row gap-6">
@@ -219,7 +219,7 @@ const EcommerceProfilePage = () => {
                 </Avatar>
                 <Badge variant="secondary" className="mb-2">
                   <Gift className="w-3 h-3 mr-1" />
-                  {mockUserData.membershipTier} Member
+                  Thành viên {mockUserData.membershipTier}
                 </Badge>
               </div>
 
@@ -230,18 +230,18 @@ const EcommerceProfilePage = () => {
                   </h1>
                   <p className="">{mockUserData.email}</p>
                   <p className="text-sm">
-                    Member since {formatDate(mockUserData.memberSince)}
+                    Thành viên từ {formatDate(mockUserData.memberSince)}
                   </p>
                 </div>
 
                 <div className="flex gap-2">
                   <Button>
                     <Edit className="w-4 h-4 mr-2" />
-                    Edit Profile
+                    Chỉnh sửa hồ sơ
                   </Button>
                   <Button variant="outline">
                     <Settings className="w-4 h-4 mr-2" />
-                    Settings
+                    Cài đặt
                   </Button>
                 </div>
               </div>
@@ -249,7 +249,7 @@ const EcommerceProfilePage = () => {
           </CardContent>
         </Card>
 
-        {/* Stats Cards */}
+        {/* Thẻ Thống kê */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card>
             <CardContent className="p-4 text-center">
@@ -257,7 +257,7 @@ const EcommerceProfilePage = () => {
               <div className="text-2xl font-bold text-blue-600">
                 {mockUserData.stats.totalOrders}
               </div>
-              <div className="text-sm">Total Orders</div>
+              <div className="text-sm">Tổng đơn hàng</div>
             </CardContent>
           </Card>
           <Card>
@@ -266,7 +266,7 @@ const EcommerceProfilePage = () => {
               <div className="text-2xl font-bold text-green-600">
                 ${mockUserData.stats.totalSpent}
               </div>
-              <div className="text-sm">Total Spent</div>
+              <div className="text-sm">Tổng chi tiêu</div>
             </CardContent>
           </Card>
           <Card>
@@ -275,7 +275,7 @@ const EcommerceProfilePage = () => {
               <div className="text-2xl font-bold text-red-600">
                 {mockUserData.stats.wishlistItems}
               </div>
-              <div className="text-sm">Wishlist Items</div>
+              <div className="text-sm">Sản phẩm yêu thích</div>
             </CardContent>
           </Card>
           <Card>
@@ -284,28 +284,28 @@ const EcommerceProfilePage = () => {
               <div className="text-2xl font-bold text-yellow-600">
                 {mockUserData.stats.loyaltyPoints}
               </div>
-              <div className="text-sm">Loyalty Points</div>
+              <div className="text-sm">Điểm thân thiết</div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Tabs Content */}
+        {/* Nội dung các Tab */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="orders">Orders</TabsTrigger>
-            <TabsTrigger value="wishlist">Wishlist</TabsTrigger>
-            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+            <TabsTrigger value="orders">Đơn hàng</TabsTrigger>
+            <TabsTrigger value="wishlist">Danh sách yêu thích</TabsTrigger>
+            <TabsTrigger value="account">Tài khoản</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Recent Orders */}
+              {/* Đơn hàng gần đây */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Package className="w-5 h-5" />
-                    Recent Orders
+                    Đơn hàng gần đây
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -338,12 +338,12 @@ const EcommerceProfilePage = () => {
                 </CardContent>
               </Card>
 
-              {/* Addresses */}
+              {/* Địa chỉ */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <MapPin className="w-5 h-5" />
-                    Addresses
+                    Địa chỉ
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -353,7 +353,7 @@ const EcommerceProfilePage = () => {
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-semibold">{address.type}</h4>
                           {address.isDefault && (
-                            <Badge variant="secondary">Default</Badge>
+                            <Badge variant="secondary">Mặc định</Badge>
                           )}
                         </div>
                         <p className="text-sm">
@@ -372,7 +372,7 @@ const EcommerceProfilePage = () => {
           <TabsContent value="orders" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Order History</CardTitle>
+                <CardTitle>Lịch sử đơn hàng</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -386,11 +386,11 @@ const EcommerceProfilePage = () => {
                         <div>
                           <p className="font-semibold">{order.id}</p>
                           <p className="text-sm">
-                            {formatDate(order.date)} • {order.items} items
+                            {formatDate(order.date)} • {order.items} sản phẩm
                           </p>
                           {order.trackingNumber && (
                             <p className="text-xs">
-                              Tracking: {order.trackingNumber}
+                              Mã vận đơn: {order.trackingNumber}
                             </p>
                           )}
                         </div>
@@ -413,7 +413,7 @@ const EcommerceProfilePage = () => {
           <TabsContent value="wishlist" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>My Wishlist</CardTitle>
+                <CardTitle>Danh sách yêu thích của tôi</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4">
@@ -435,15 +435,15 @@ const EcommerceProfilePage = () => {
                         <p
                           className={`text-sm ${item.inStock ? 'text-green-600' : 'text-red-600'}`}
                         >
-                          {item.inStock ? 'In Stock' : 'Out of Stock'}
+                          {item.inStock ? 'Còn hàng' : 'Hết hàng'}
                         </p>
                       </div>
                       <div className="flex gap-2">
                         <Button size="sm" disabled={!item.inStock}>
-                          Add to Cart
+                          Thêm vào giỏ hàng
                         </Button>
                         <Button variant="outline" size="sm">
-                          Remove
+                          Xóa
                         </Button>
                       </div>
                     </div>
@@ -455,12 +455,12 @@ const EcommerceProfilePage = () => {
 
           <TabsContent value="account" className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Payment Methods */}
+              {/* Phương thức thanh toán */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <CreditCard className="w-5 h-5" />
-                    Payment Methods
+                    Phương thức thanh toán
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -476,46 +476,46 @@ const EcommerceProfilePage = () => {
                             <p className="font-semibold">
                               {method.brand} •••• {method.last4}
                             </p>
-                            <p className="text-sm">Expires {method.expiry}</p>
+                            <p className="text-sm">Hết hạn {method.expiry}</p>
                           </div>
                         </div>
                         {method.isDefault && (
-                          <Badge variant="secondary">Default</Badge>
+                          <Badge variant="secondary">Mặc định</Badge>
                         )}
                       </div>
                     ))}
                     <Button variant="outline" className="w-full">
-                      Add Payment Method
+                      Thêm phương thức thanh toán
                     </Button>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Account Settings */}
+              {/* Cài đặt tài khoản */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Settings className="w-5 h-5" />
-                    Account Settings
+                    Cài đặt tài khoản
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <Button variant="outline" className="w-full justify-start">
                       <Bell className="w-4 h-4 mr-2" />
-                      Notification Preferences
+                      Tùy chọn thông báo
                     </Button>
                     <Button variant="outline" className="w-full justify-start">
                       <Shield className="w-4 h-4 mr-2" />
-                      Privacy Settings
+                      Cài đặt quyền riêng tư
                     </Button>
                     <Button variant="outline" className="w-full justify-start">
                       <User className="w-4 h-4 mr-2" />
-                      Personal Information
+                      Thông tin cá nhân
                     </Button>
                     <Separator />
                     <Button variant="destructive" className="w-full">
-                      Delete Account
+                      Xóa tài khoản
                     </Button>
                   </div>
                 </CardContent>
