@@ -88,3 +88,4 @@ export interface Vendor {
   handle: string;
   description: string;
 }
+
