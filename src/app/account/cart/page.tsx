@@ -1,8 +1,8 @@
 'use client';
 
 import { deleteCartItem, getUserCartAPI } from '@/apis/cart';
+import { addProductToWishlist } from '@/apis/wishlist';
 import CartItem from '@/components/CartItem';
-import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import NoDataAlert from '@/components/NoDataAlert';
 import { Badge } from '@/components/ui/badge';
@@ -18,9 +18,9 @@ import {
   SelectValue
 } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import keycloak from '@/config/keycloakConfig';
+import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
-import { toastSuccess } from '@/utils/toastify';
+import { toastError, toastSuccess } from '@/utils/toastify';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
@@ -167,6 +167,23 @@ const Cart = () => {
       handleOpenUnauthorizedAlert();
     }
   }, [error]);
+
+  const { mutate: addProductToWishlistMutation } = useMutation({
+    mutationKey: ['addProductToWishlist'],
+    mutationFn: addProductToWishlist,
+    onSuccess: (response) => {
+      if (response.data) toastSuccess(response.data);
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        toastError(err.response?.data);
+      }
+    }
+  });
+
+  const handleAddProductToWishlist = (productId: string) => {
+    addProductToWishlistMutation(productId);
+  };
 
   return (
     <>
@@ -354,6 +371,7 @@ const Cart = () => {
                         isSelected={selectedItems.has(item.id)}
                         handleSelectCart={handleSelectedCart}
                         handleDeleteItem={handleDeleteCartItem}
+                        handleAddProductToWishlist={handleAddProductToWishlist}
                       />
                     ))}
 

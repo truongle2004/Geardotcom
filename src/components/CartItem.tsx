@@ -8,6 +8,10 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
+import { addProductToWishlist } from '@/apis/wishlist';
+import { toastSuccess, toastError } from '@/utils/toastify';
+import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 interface CartItemProps {
   cartItem: CartItemType;
@@ -15,6 +19,7 @@ interface CartItemProps {
   isPendingDelete: boolean;
   handleSelectCart: (id: string, isChecked: boolean) => void;
   handleDeleteItem: (id: string) => void;
+  handleAddProductToWishlist: (productId: string) => void;
 }
 
 const CartItem: FC<CartItemProps> = ({
@@ -22,7 +27,8 @@ const CartItem: FC<CartItemProps> = ({
   isSelected,
   isPendingDelete: isLoadingDelete,
   handleDeleteItem,
-  handleSelectCart
+  handleSelectCart,
+  handleAddProductToWishlist
 }) => {
   const [quantity, setQuantity] = useState(cartItem?.quantity || 1);
 
@@ -122,6 +128,9 @@ const CartItem: FC<CartItemProps> = ({
                     variant="ghost"
                     size="sm"
                     className="text-gray-500 hover:text-red-600 p-0 h-auto font-normal"
+                    onClick={() =>
+                      handleAddProductToWishlist(cartItem.productId)
+                    }
                   >
                     <Heart className="mr-1.5 h-4 w-4" />
                     Lưu vào yêu thích
