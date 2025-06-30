@@ -30,16 +30,16 @@ const UnAuthorizedAlert: FC<AddToCartModalProps> = ({ isOpen, onClose }) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Login required</DialogTitle>
+          <DialogTitle>Yêu cầu đăng nhập</DialogTitle>
           <DialogDescription>
-            You need to be logged in to do this action.
+            Bạn cần đăng nhập để thực hiện yêu cầu này
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={handleCancel}>
-            Cancel
+            Bỏ qua
           </Button>
-          <Button onClick={handleLogin}>Go to Login</Button>
+          <Button onClick={handleLogin}>Đăng nhập</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

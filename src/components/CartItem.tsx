@@ -124,7 +124,7 @@ const CartItem: FC<CartItemProps> = ({
                     className="text-gray-500 hover:text-red-600 p-0 h-auto font-normal"
                   >
                     <Heart className="mr-1.5 h-4 w-4" />
-                    Save for Later
+                    Lưu vào yêu thích
                   </Button>
                   <Button
                     variant="ghost"
@@ -134,7 +134,7 @@ const CartItem: FC<CartItemProps> = ({
                     disabled={isLoadingDelete}
                   >
                     <Trash2 className="mr-1.5 h-4 w-4" />
-                    Remove
+                    Xóa
                   </Button>
                 </div>
               </div>

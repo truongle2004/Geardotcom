@@ -397,12 +397,12 @@ const Cart = () => {
                           Miễn phí
                         </span>
                       </div>
-                      <div className="flex items-center justify-between">
+                      {/* <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-500">Thuế</span>
                         <span className="font-medium">
                           {(selectedItemsTotal * 0.08).toLocaleString('vi-VN')}đ
                         </span>
-                      </div>
+                      </div> */}
                     </div>
 
                     <Separator />
