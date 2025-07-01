@@ -82,3 +82,11 @@ img {
 .subheader-item {
   @apply hover:text-red-400 transition duration-300 ease-in-out cursor-pointer;
 }
+
+.profile-icon {
+  @apply w-5 h-5;
+}
+
+.profile-header-title {
+  @apply text-xl;
+}

@@ -19,3 +19,12 @@ export enum SortOption {
   PRICE_LOW_TO_HIGH = 'priceAsc',
   PRICE_HIGH_TO_LOW = 'priceDesc'
 }
+
+export enum SideBarTypeEnum {
+  ACCOUNT_INFO = 'ACCOUNT_INFO',
+  ADDRESS = 'ADDRESS',
+  MANAGE_ORDER = 'MANAGE_ORDER',
+  WISHLIST = 'WISHLIST',
+  VIEW_HISTORY = 'VIEW_HISTORY',
+  LOGOUT = 'LOGOUT'
+}
