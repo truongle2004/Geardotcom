@@ -51,7 +51,8 @@ export const getAccessToken = async (): Promise<string | null> => {
 
 export const logout = () => {
   keycloak.logout({
-    redirectUri: window.location.origin
+    redirectUri: 'http://localhost:3000/home'
+    // redirectUri: window.location.origin,
   });
 };
 
