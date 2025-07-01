@@ -104,21 +104,10 @@ const CartItem: FC<CartItemProps> = ({
                   <h3 className="font-semibold text-lg text-gray-900 dark:text-white line-clamp-2 leading-tight">
                     {cartItem?.productTitle}
                   </h3>
-                  {cartItem?.variant && (
-                    <p className="text-sm text-gray-500 mt-1">
-                      {cartItem.variant}
-                    </p>
-                  )}
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-sm font-medium text-primary">
                       ${cartItem?.price?.toFixed(2)}
                     </span>
-                    {cartItem?.originalPrice &&
-                      cartItem?.originalPrice > cartItem?.price && (
-                        <span className="text-sm text-gray-500 line-through">
-                          ${cartItem?.originalPrice?.toFixed(2)}
-                        </span>
-                      )}
                   </div>
                 </div>
 

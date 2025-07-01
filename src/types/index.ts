@@ -17,6 +17,7 @@ export interface PaginatedResponse<T> {
 
 export interface CartItemType {
   id: string;
+  inStock: boolean;
   productTitle: string;
   productId: string;
   handle: string;
@@ -88,4 +89,3 @@ export interface Vendor {
   handle: string;
   description: string;
 }
-
