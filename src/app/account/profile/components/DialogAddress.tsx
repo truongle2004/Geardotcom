@@ -25,7 +25,7 @@ import PaginatedSelect from './PaginatedSelect';
 type ProfileAddressFormData = z.infer<typeof profileAddressSchema>;
 
 const DialogAddress = () => {
-  const [selectedButtonIdx, setSelectedButtonIdx] = useState(0);
+  const [selectedButtonIdx, setSelectedButtonIdx] = useState(1); // Default to 'Văn phòng'
   const { isOpenDialogProfileAddress, setIsOpenDialogProfileAddress } =
     useDialogStore();
 
@@ -50,7 +50,7 @@ const DialogAddress = () => {
       city: '',
       district: '',
       ward: '',
-      type: ''
+      type: 'office' // Default to 'Văn phòng'
     }
   });
 
@@ -160,8 +160,7 @@ const DialogAddress = () => {
       districtCode: selectedCodes.districtCode
     };
 
-    alert('Địa chỉ đã được lưu thành công!');
-    setIsOpenDialogProfileAddress(false);
+    // setIsOpenDialogProfileAddress(false);
   };
 
   // reset form data
@@ -172,7 +171,7 @@ const DialogAddress = () => {
         provinceCode: '',
         districtCode: ''
       });
-      setSelectedButtonIdx(0);
+      setSelectedButtonIdx(1); // Reset to default
     }
   }, [isOpenDialogProfileAddress, reset]);
 
@@ -185,12 +184,11 @@ const DialogAddress = () => {
       open={isOpenDialogProfileAddress}
       onOpenChange={setIsOpenDialogProfileAddress}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader className="border-b-black">
-            <DialogTitle>Địa chỉ mới</DialogTitle>
-          </DialogHeader>
-
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader className="border-b-black">
+          <DialogTitle>Địa chỉ mới</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid gap-4">
             {/* Thông tin khách hàng */}
             <div className="grid gap-3">
@@ -357,13 +355,12 @@ const DialogAddress = () => {
                 Hủy
               </Button>
             </DialogClose>
-
-            <Button type="submit" className="bg-red-500 hover:bg-red-600">
+            <Button className="bg-red-500 hover:bg-red-600" type="submit">
               Lưu thay đổi
             </Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };
