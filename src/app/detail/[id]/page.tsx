@@ -129,7 +129,7 @@ const ProductDetailPage = () => {
       <UnAuthorizedAlert isOpen={isOpenDialog} onClose={handleCloseDialog} />
       {isLoading && <LoadingOverlay />}
       <Header />
-      <div className="min-h-screen from-slate-50 to-white">
+      <div className="min-h-screen from-slate-50 to-white pt-20">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Hình ảnh sản phẩm */}
