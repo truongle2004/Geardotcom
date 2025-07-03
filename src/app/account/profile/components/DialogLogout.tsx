@@ -4,26 +4,26 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogDescription
+  DialogTitle
 } from '@/components/ui/dialog';
-import keycloak from '@/config/keycloakConfig';
+import useDialogStore from '@/store/dialogStore';
 import { logout } from '@/utils/auth';
-import { LogOut, AlertTriangle } from 'lucide-react';
+import { AlertTriangle, LogOut } from 'lucide-react';
 
-interface DialogLogoutProps {
-  open: boolean;
-  onOpenChange?: (open: boolean) => void; // optional if you need to handle close
-}
-
-const DialogLogout = ({ open, onOpenChange }: DialogLogoutProps) => {
+const DialogLogout = () => {
   const handleLogout = () => {
     logout();
   };
+  const { isOpenDialogProfileLogout, setIsOpenDialogProfileLogout } =
+    useDialogStore();
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={isOpenDialogProfileLogout}
+      onOpenChange={setIsOpenDialogProfileLogout}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="flex flex-col items-center gap-2">
           <AlertTriangle className="text-yellow-500" size={40} />

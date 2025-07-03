@@ -90,3 +90,7 @@ img {
 .profile-header-title {
   @apply text-xl;
 }
+
+.main-content {
+  scroll-margin-top: 4rem; /* same as header height */
+}

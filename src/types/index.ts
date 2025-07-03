@@ -13,6 +13,8 @@ export interface PaginatedResponse<T> {
   number: number;
   first: boolean;
   last: boolean;
+  hasNext: boolean;
+  currentPage: number;
 }
 
 export interface CartItemType {
@@ -88,4 +90,36 @@ export interface Vendor {
   name: string;
   handle: string;
   description: string;
+}
+
+interface BaseAddress {
+  id: number;
+  code: number;
+  name: string;
+  codename: string;
+  divisionType: string;
+  shortCodeName: string;
+}
+
+export interface District extends BaseAddress {
+  provinceCode: string;
+}
+
+export interface Ward extends BaseAddress {
+  districtCode: string;
+}
+
+export interface Province extends BaseAddress {}
+
+export interface PaginatedSelectProps {
+  placeholder: string;
+  value: string;
+  onValueChange: (value: string, item: any) => void;
+  data: any[];
+  hasNextPage: boolean;
+  fetchNextPage: () => void;
+  isFetchingNextPage: boolean;
+  disabled?: boolean;
+  className?: string;
+  error?: string;
 }

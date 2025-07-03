@@ -27,7 +27,7 @@ const Header = () => {
   const handleRouteProductPage = () => router.push('/products');
 
   return (
-    <nav className="sticky top-0 z-50 bg-background">
+    <nav className="sticky top-0 z-50 bg-background h-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Mobile Menu */}
@@ -88,7 +88,7 @@ const Header = () => {
             >
               <ShoppingCart className="h-5 w-5" />
             </Button>
-            <ModeToggle />
+            {/* <ModeToggle /> */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <div className="flex items-center gap-2 cursor-pointer border border-gray-300 rounded-md px-1 py-1">
