@@ -1,30 +1,29 @@
 'use client';
-import { useEffect, useState, type FC } from 'react';
-import { SideBarTypeEnum } from '@/enums/enums';
+import { TabProfileEnum } from '@/enums/enums';
+import { type FC } from 'react';
 import AccountInfo from './AccountInfo';
 import Address from './Address';
-import ViewHistory from './ViewHistory';
-import ManageOrder from './ManageOrder';
+import DialogAddress from './DialogAddress';
 import DialogLogout from './DialogLogout';
+import ManageOrder from './ManageOrder';
+import ViewHistory from './ViewHistory';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-interface Props {
-  sidebarType: SideBarTypeEnum;
-  onOpenDialogLogout: boolean;
-  onOpenChange: (open: boolean) => void;
-}
+const RightSidebar = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+  const tab = params.get('tab') || TabProfileEnum.ACCOUNT_INFO.toString();
+  console.log(tab);
 
-const RightSidebar: FC<Props> = ({
-  sidebarType,
-  onOpenChange,
-  onOpenDialogLogout
-}) => {
   return (
     <>
-      {sidebarType === SideBarTypeEnum.ACCOUNT_INFO && <AccountInfo />}
-      {sidebarType === SideBarTypeEnum.ADDRESS && <Address />}
-      {sidebarType === SideBarTypeEnum.VIEW_HISTORY && <ViewHistory />}
-      {sidebarType === SideBarTypeEnum.MANAGE_ORDER && <ManageOrder />}
-      <DialogLogout open={onOpenDialogLogout} onOpenChange={onOpenChange} />
+      {tab === TabProfileEnum.ACCOUNT_INFO.toString() && <AccountInfo />}
+      {tab === TabProfileEnum.ADDRESS.toString() && <Address />}
+      {tab === TabProfileEnum.VIEW_HISTORY.toString() && <ViewHistory />}
+      {tab === TabProfileEnum.MANAGE_ORDER.toString() && <ManageOrder />}
+      <DialogAddress />
+      <DialogLogout />
     </>
   );
 };

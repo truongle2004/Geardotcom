@@ -28,3 +28,11 @@ export enum SideBarTypeEnum {
   VIEW_HISTORY = 'VIEW_HISTORY',
   LOGOUT = 'LOGOUT'
 }
+
+export enum TabProfileEnum {
+  ADDRESS = 'address',
+  LOGOUT = 'logout',
+  VIEW_HISTORY = 'view-history',
+  MANAGE_ORDER = 'manage-order',
+  ACCOUNT_INFO = 'account-info'
+}

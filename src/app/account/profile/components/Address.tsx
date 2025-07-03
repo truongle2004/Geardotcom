@@ -1,8 +1,11 @@
+'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import useDialogStore from '@/store/dialogStore';
 import { MapPinHouse, Plus } from 'lucide-react';
 
 const Address = () => {
+  const { setIsOpenDialogProfileAddress } = useDialogStore();
   return (
     <Card className="flex-1">
       <CardHeader className="flex flex-row justify-between">
@@ -10,7 +13,7 @@ const Address = () => {
           <MapPinHouse className="profile-icon" />
           Số địa chỉ
         </CardTitle>
-        <Button>
+        <Button onClick={() => setIsOpenDialogProfileAddress(true)}>
           <Plus className="w-4 h-4 mr-2" />
           Thêm địa chỉ mới
         </Button>

@@ -8,10 +8,6 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
-import { addProductToWishlist } from '@/apis/wishlist';
-import { toastSuccess, toastError } from '@/utils/toastify';
-import { useMutation } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
 
 interface CartItemProps {
   cartItem: CartItemType;
