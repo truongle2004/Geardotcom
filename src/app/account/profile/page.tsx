@@ -1,5 +1,4 @@
 'use client';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import LeftSideBar from './components/LeftSideBar';
 import RightSidebar from './components/RightSidebar';
