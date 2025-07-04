@@ -102,11 +102,11 @@ interface BaseAddress {
 }
 
 export interface District extends BaseAddress {
-  provinceCode: string;
+  provinceCode: number;
 }
 
 export interface Ward extends BaseAddress {
-  districtCode: string;
+  districtCode: number;
 }
 
 export interface Province extends BaseAddress {}
@@ -123,3 +123,17 @@ export interface PaginatedSelectProps {
   className?: string;
   error?: string;
 }
+
+interface BaseUserAddressApi {
+  id?: string;
+  receiverName: string;
+  phoneNumber: string;
+  fullAddress: string;
+  provinceCode: number;
+  districtCode: number;
+  wardCode: number;
+  addressType: string;
+}
+
+export interface UserAddressRequest extends BaseUserAddressApi {}
+export interface UserAddressResponse extends BaseUserAddressApi {}
