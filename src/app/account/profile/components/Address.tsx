@@ -35,7 +35,6 @@ const Address = () => {
 
   const {
     data,
-    isSuccess,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,

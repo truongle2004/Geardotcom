@@ -2,7 +2,6 @@
 import {
   getDistrictAPI,
   getProvinceAPI,
-  getUserAddressAPI,
   getWardAPI,
   updateUserAddressAPI
 } from '@/apis/user';
@@ -21,16 +20,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useDialogStore from '@/store/dialogStore';
 import { District, Province, Ward } from '@/types';
+import { toastError, toastSuccess } from '@/utils/toastify';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { profileAddressSchema } from '../../../../../schema';
+import { profileAddressSchema } from '@/schema';
 import PaginatedSelect from './PaginatedSelect';
-import keycloak from '@/config/keycloakConfig';
-import { toastError, toastSuccess } from '@/utils/toastify';
-import { AxiosError } from 'axios';
 
 type ProfileAddressFormData = z.infer<typeof profileAddressSchema>;
 

@@ -659,7 +659,7 @@ const ProductsPage = () => {
   return (
     <>
       <UnAuthorizedAlert isOpen={isOpenDialog} onClose={handleCloseDialog} />
-      <div className="min-h-screen">
+      <div className="min-h-screen pt-16">
         {isLoading && <LoadingOverlay />}
         {isLoadingError ? (
           <ErrorAlert />
