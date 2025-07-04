@@ -145,12 +145,6 @@ const DialogAddress = () => {
     }
   });
 
-  const { data: userAddress, isPending: getUserAddressPending } = useQuery({
-    queryKey: ['get-address'],
-    queryFn: getUserAddressAPI,
-    enabled: keycloak.authenticated
-  });
-
   // ====================Call Api Address===================
 
   // ===================Handle Data===================
