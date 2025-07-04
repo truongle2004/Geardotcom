@@ -5,6 +5,8 @@ import type {
   District,
   PaginatedResponse,
   Province,
+  UserAddressRequest,
+  UserAddressResponse,
   Ward
 } from '@/types';
 import axiosInstance from '@/utils/axiosInstance';
@@ -13,7 +15,7 @@ const root = '/user';
 export const getDistrictAPI = (
   page: number = Constant.DEFAULT_PAGE_NUMBER,
   size: number = Constant.DEFAULT_PAGE_SIZE,
-  provincode: string
+  provincode: number
 ): Promise<ApiResponse<PaginatedResponse<District[]>>> => {
   return axiosInstance.get(`${ApiEnum.API_V1}${root}/districts/${provincode}`, {
     params: {
@@ -26,7 +28,7 @@ export const getDistrictAPI = (
 export const getWardAPI = (
   page: number = Constant.DEFAULT_PAGE_NUMBER,
   size: number = Constant.DEFAULT_PAGE_SIZE,
-  districtCode: string
+  districtCode: number
 ): Promise<ApiResponse<PaginatedResponse<Ward[]>>> => {
   return axiosInstance.get(`${ApiEnum.API_V1}${root}/wards/${districtCode}`, {
     params: {
@@ -46,4 +48,16 @@ export const getProvinceAPI = (
       size
     }
   });
+};
+
+export const updateUserAddressAPI = (
+  data: UserAddressRequest
+): Promise<ApiResponse<string>> => {
+  return axiosInstance.put(`${ApiEnum.API_V1}${root}/address`, data);
+};
+
+export const getUserAddressAPI = (): Promise<
+  ApiResponse<UserAddressResponse>
+> => {
+  return axiosInstance.get(`${ApiEnum.API_V1}${root}/address`);
 };

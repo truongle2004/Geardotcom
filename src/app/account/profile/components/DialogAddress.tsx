@@ -1,5 +1,12 @@
 'use client';
-import { getDistrictAPI, getProvinceAPI, getWardAPI } from '@/apis/user';
+import {
+  getDistrictAPI,
+  getProvinceAPI,
+  getUserAddressAPI,
+  getWardAPI,
+  updateUserAddressAPI
+} from '@/apis/user';
+import ButtonLoader from '@/components/ButtonLoader';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { Button } from '@/components/ui/button';
 import {
@@ -15,12 +22,15 @@ import { Label } from '@/components/ui/label';
 import useDialogStore from '@/store/dialogStore';
 import { District, Province, Ward } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { profileAddressSchema } from '../../../../../schema';
 import PaginatedSelect from './PaginatedSelect';
+import keycloak from '@/config/keycloakConfig';
+import { toastError, toastSuccess } from '@/utils/toastify';
+import { AxiosError } from 'axios';
 
 type ProfileAddressFormData = z.infer<typeof profileAddressSchema>;
 
@@ -30,8 +40,9 @@ const DialogAddress = () => {
     useDialogStore();
 
   const [selectedCodes, setSelectedCodes] = useState({
-    provinceCode: '',
-    districtCode: ''
+    provinceCode: 0,
+    districtCode: 0,
+    wardCode: 0
   });
 
   const {
@@ -106,6 +117,40 @@ const DialogAddress = () => {
       lastPage?.data.hasNext ? lastPage?.data.currentPage + 1 : undefined,
     initialPageParam: 0
   });
+
+  const {
+    data: updateUserAddressData,
+    mutate: updateUserAddressMutation,
+    isPending: updateAddressPending,
+    isSuccess: updateAddressSuccess
+  } = useMutation({
+    mutationKey: ['update-address'],
+    mutationFn: updateUserAddressAPI,
+    onSuccess: (res) => {
+      if (
+        res.data !== undefined &&
+        res.data !== null &&
+        res.httpStatus === 200
+      ) {
+        toastSuccess(res.data);
+        setIsOpenDialogProfileAddress(false);
+      } else {
+        toastError(res.data);
+      }
+    },
+    onError: (err) => {
+      if (err instanceof AxiosError) {
+        toastError(err.response?.data);
+      }
+    }
+  });
+
+  const { data: userAddress, isPending: getUserAddressPending } = useQuery({
+    queryKey: ['get-address'],
+    queryFn: getUserAddressAPI,
+    enabled: keycloak.authenticated
+  });
+
   // ====================Call Api Address===================
 
   // ===================Handle Data===================
@@ -128,8 +173,8 @@ const DialogAddress = () => {
     setValue('ward', ''); // Reset ward when province changes
     setSelectedCodes((prev) => ({
       ...prev,
-      provinceCode: province.code.toString(),
-      districtCode: '' // Reset district code
+      provinceCode: province.code,
+      districtCode: 0 // Reset district code
     }));
   };
 
@@ -138,29 +183,38 @@ const DialogAddress = () => {
     setValue('ward', ''); // Reset ward when district changes
     setSelectedCodes((prev) => ({
       ...prev,
-      districtCode: district.code.toString()
+      districtCode: district.code
     }));
   };
 
   const handleWardChange = (value: string, ward: Ward) => {
     setValue('ward', value);
+    setSelectedCodes((prev) => ({
+      ...prev,
+      wardCode: ward.code
+    }));
   };
 
   // ===================Handle Function===================
 
   const onSubmit = (data: ProfileAddressFormData) => {
-    console.log('Submitting new address:', data);
-    console.log('Selected codes:', selectedCodes);
-
-    // TODO: Call API to save address
     // You can also include the codes for backend processing
     const addressData = {
       ...data,
       provinceCode: selectedCodes.provinceCode,
-      districtCode: selectedCodes.districtCode
+      districtCode: selectedCodes.districtCode,
+      wardCode: selectedCodes.wardCode
     };
 
-    // setIsOpenDialogProfileAddress(false);
+    updateUserAddressMutation({
+      fullAddress: addressData.address,
+      provinceCode: addressData.provinceCode,
+      districtCode: addressData.districtCode,
+      wardCode: addressData.wardCode,
+      receiverName: addressData.fullname,
+      phoneNumber: addressData.phone,
+      addressType: addressData.type
+    });
   };
 
   // reset form data
@@ -168,8 +222,9 @@ const DialogAddress = () => {
     if (!isOpenDialogProfileAddress) {
       reset();
       setSelectedCodes({
-        provinceCode: '',
-        districtCode: ''
+        provinceCode: 0,
+        districtCode: 0,
+        wardCode: 0
       });
       setSelectedButtonIdx(1); // Reset to default
     }
@@ -355,8 +410,8 @@ const DialogAddress = () => {
                 Hủy
               </Button>
             </DialogClose>
-            <Button className="bg-red-500 hover:bg-red-600" type="submit">
-              Lưu thay đổi
+            <Button variant={'danger'} type="submit">
+              {updateAddressPending ? <ButtonLoader /> : <p>Lưu thay đổi</p>}
             </Button>
           </DialogFooter>
         </form>
