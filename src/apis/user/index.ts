@@ -56,8 +56,26 @@ export const updateUserAddressAPI = (
   return axiosInstance.put(`${ApiEnum.API_V1}${root}/address`, data);
 };
 
-export const getUserAddressAPI = (): Promise<
-  ApiResponse<UserAddressResponse>
-> => {
-  return axiosInstance.get(`${ApiEnum.API_V1}${root}/address`);
+export const getUserAddressAPI = ({
+  page,
+  size,
+  direction,
+  sort,
+  search
+}: {
+  page: number;
+  size: number;
+  direction?: string;
+  sort?: string;
+  search?: string;
+}): Promise<ApiResponse<PaginatedResponse<UserAddressResponse[]>>> => {
+  return axiosInstance.get(`${ApiEnum.API_V1}${root}/address`, {
+    params: {
+      page,
+      size,
+      direction,
+      sort,
+      search
+    }
+  });
 };

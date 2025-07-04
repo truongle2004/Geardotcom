@@ -124,7 +124,7 @@ export interface PaginatedSelectProps {
   error?: string;
 }
 
-interface BaseUserAddressApi {
+export interface UserAddressRequest {
   id?: string;
   receiverName: string;
   phoneNumber: string;
@@ -135,5 +135,13 @@ interface BaseUserAddressApi {
   addressType: string;
 }
 
-export interface UserAddressRequest extends BaseUserAddressApi {}
-export interface UserAddressResponse extends BaseUserAddressApi {}
+export interface UserAddressResponse {
+  id?: string;
+  receiverName: string;
+  phoneNumber: string;
+  fullAddress: string;
+  province: string;
+  district: string;
+  ward: string;
+  addressType: string;
+}

@@ -2,6 +2,7 @@
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import axiosInstance from '@/utils/axiosInstance';
 import { useKeycloak } from '@react-keycloak/web';
 import { useEffect } from 'react';
 
