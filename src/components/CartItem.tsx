@@ -8,6 +8,7 @@ import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
+import { convertVND } from '@/utils/vnd';
 
 interface CartItemProps {
   cartItem: CartItemType;
@@ -102,7 +103,7 @@ const CartItem: FC<CartItemProps> = ({
                   </h3>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-sm font-medium text-primary">
-                      ${cartItem?.price?.toFixed(2)}
+                      {convertVND(cartItem?.price)}
                     </span>
                   </div>
                 </div>
@@ -172,11 +173,11 @@ const CartItem: FC<CartItemProps> = ({
                 {/* Price */}
                 <div className="text-right">
                   <p className="text-lg font-bold text-gray-900 dark:text-white">
-                    ${totalPrice.toLocaleString()}
+                    {convertVND(totalPrice)}
                   </p>
                   {quantity > 1 && (
                     <p className="text-sm text-gray-500">
-                      ${cartItem?.price?.toFixed(2)} each
+                      {convertVND(cartItem?.price)} each
                     </p>
                   )}
                 </div>

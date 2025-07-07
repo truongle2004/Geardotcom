@@ -1,18 +1,13 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { TabProfileEnum, SideBarTypeEnum } from '@/enums/enums';
+import { TabProfileEnum } from '@/enums/enums';
 import useDialogStore from '@/store/dialogStore';
 import { Eye, LogOut, MapPin, Settings, ShoppingBag, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { FC } from 'react';
 
 const ROOT_PATH = '/account/profile?tab=';
-
-interface Props {
-  handleChangeParam: (param: string) => void;
-}
 
 const LeftSideBar = () => {
   const { setIsOpenDialogProfileLogout } = useDialogStore();

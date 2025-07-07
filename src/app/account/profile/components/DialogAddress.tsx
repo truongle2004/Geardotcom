@@ -48,7 +48,6 @@ const DialogAddress = () => {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
     reset
   } = useForm<ProfileAddressFormData>({
     resolver: zodResolver(profileAddressSchema),
@@ -63,8 +62,8 @@ const DialogAddress = () => {
     }
   });
 
-  const watchedCity = watch('city');
-  const watchedDistrict = watch('district');
+  // const watchedCity = watch('city');
+  // const watchedDistrict = watch('district');
 
   const styleWidth = 'w-[210px]';
   const styleButtonSelected = 'border-red-500 text-red-500 hover:text-red-500';
@@ -74,8 +73,8 @@ const DialogAddress = () => {
     data: districtsData,
     fetchNextPage: fetchNextDistricts,
     hasNextPage: hasNextDistrictPage,
-    isFetchingNextPage: isFetchingNextDistrict,
-    isLoading: districtsLoading
+    isFetchingNextPage: isFetchingNextDistrict
+    // isLoading: districtsLoading
   } = useInfiniteQuery({
     queryKey: ['districts-paginated', selectedCodes.provinceCode],
     queryFn: ({ pageParam = 0 }) =>
@@ -90,8 +89,8 @@ const DialogAddress = () => {
     data: wardsData,
     fetchNextPage: fetchNextWards,
     hasNextPage: hasNextWardPage,
-    isFetchingNextPage: isFetchingNextWard,
-    isLoading: wardsLoading
+    isFetchingNextPage: isFetchingNextWard
+    // isLoading: wardsLoading
   } = useInfiniteQuery({
     queryKey: ['wards-paginated', selectedCodes.districtCode],
     queryFn: ({ pageParam = 0 }) =>
@@ -116,32 +115,28 @@ const DialogAddress = () => {
     initialPageParam: 0
   });
 
-  const {
-    data: updateUserAddressData,
-    mutate: updateUserAddressMutation,
-    isPending: updateAddressPending,
-    isSuccess: updateAddressSuccess
-  } = useMutation({
-    mutationKey: ['update-address'],
-    mutationFn: updateUserAddressAPI,
-    onSuccess: (res) => {
-      if (
-        res.data !== undefined &&
-        res.data !== null &&
-        res.httpStatus === 200
-      ) {
-        toastSuccess(res.data);
-        setIsOpenDialogProfileAddress(false);
-      } else {
-        toastError(res.data);
+  const { mutate: updateUserAddressMutation, isPending: updateAddressPending } =
+    useMutation({
+      mutationKey: ['update-address'],
+      mutationFn: updateUserAddressAPI,
+      onSuccess: (res) => {
+        if (
+          res.data !== undefined &&
+          res.data !== null &&
+          res.httpStatus === 200
+        ) {
+          toastSuccess(res.data);
+          setIsOpenDialogProfileAddress(false);
+        } else {
+          toastError(res.data);
+        }
+      },
+      onError: (err) => {
+        if (err instanceof AxiosError) {
+          toastError(err.response?.data);
+        }
       }
-    },
-    onError: (err) => {
-      if (err instanceof AxiosError) {
-        toastError(err.response?.data);
-      }
-    }
-  });
+    });
 
   // ====================Call Api Address===================
 
