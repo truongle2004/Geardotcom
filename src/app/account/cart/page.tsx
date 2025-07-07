@@ -10,30 +10,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
+import useUserStore from '@/store/userStore';
 import { toastError, toastSuccess } from '@/utils/toastify';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
   ArrowRight,
   CreditCard,
-  Filter,
   Gift,
   Loader2,
   Package,
-  Search,
   ShoppingCart,
-  SortAsc,
-  SortDesc,
   Tag,
   Trash2
 } from 'lucide-react';
@@ -46,9 +36,10 @@ const Cart = () => {
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [priceFilter, setPriceFilter] = useState('all');
-  const [showFilters, setShowFilters] = useState(false);
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const [isOpenUnauthorizedAlert, setIsOpenUnauthorizedAlert] = useState(false);
+
+  const { userInfo } = useUserStore();
 
   const handleCloseUnauthorizedAlert = () => {
     setIsOpenUnauthorizedAlert(false);
@@ -74,7 +65,9 @@ const Cart = () => {
     initialPageParam: Constant.DEFAULT_PAGE_NUMBER,
     getNextPageParam: (lastPage, allPages) => {
       return !lastPage?.data?.last ? allPages.length + 1 : undefined;
-    }
+    },
+    enabled:
+      userInfo.sub !== undefined && userInfo.sub !== null && userInfo.sub !== ''
   });
 
   const cartItemsData = useMemo(() => {
@@ -150,13 +143,9 @@ const Cart = () => {
     console.log('Delete selected items:', Array.from(selectedItems));
   };
 
-  const toggleSortOrder = () => {
-    setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-  };
-
   const selectedItemsTotal = useMemo(() => {
     return cartItemsData!
-      .filter((item) => selectedItems.has(item.id))
+      .filter((item) => selectedItems.has(item?.id))
       .reduce((total, item) => total + item.price * item.quantity, 0);
   }, [cartItemsData, selectedItems]);
 
@@ -212,10 +201,9 @@ const Cart = () => {
               </div>
 
               {/* Search and Filter Bar */}
-              <Card className="mb-6">
+              {/* <Card className="mb-6">
                 <CardContent className="p-4">
                   <div className="flex flex-col sm:flex-row gap-4 items-center">
-                    {/* Search */}
                     <div className="relative flex-1">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                       <Input
@@ -226,7 +214,6 @@ const Cart = () => {
                       />
                     </div>
 
-                    {/* Sort */}
                     <div className="flex items-center gap-2">
                       <Select value={sortBy} onValueChange={setSortBy}>
                         <SelectTrigger className="w-32">
@@ -253,7 +240,6 @@ const Cart = () => {
                       </Button>
                     </div>
 
-                    {/* Filter Toggle */}
                     <Button
                       variant="outline"
                       onClick={() => setShowFilters(!showFilters)}
@@ -264,7 +250,6 @@ const Cart = () => {
                     </Button>
                   </div>
 
-                  {/* Filter Options */}
                   {showFilters && (
                     <div className="mt-4 pt-4 border-t">
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -298,7 +283,7 @@ const Cart = () => {
                     </div>
                   )}
                 </CardContent>
-              </Card>
+              </Card> */}
             </div>
 
             {/* Selection Controls */}
@@ -365,10 +350,10 @@ const Cart = () => {
                   <div className="space-y-6">
                     {cartItemsData!.map((item) => (
                       <CartItem
-                        key={item.id}
+                        key={item?.id}
                         cartItem={item}
                         isPendingDelete={isDeletingPending}
-                        isSelected={selectedItems.has(item.id)}
+                        isSelected={selectedItems.has(item?.id)}
                         handleSelectCart={handleSelectedCart}
                         handleDeleteItem={handleDeleteCartItem}
                         handleAddProductToWishlist={handleAddProductToWishlist}

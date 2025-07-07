@@ -6,6 +6,8 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import React from 'react';
 import './globals.css';
 import { ToastContainer } from 'react-toastify';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -39,6 +41,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               <ToastContainer />
+              <Header />
               {children}
             </ThemeProvider>
           </QueryProvider>

@@ -1,23 +1,21 @@
 'use client';
 
-import React from 'react';
-import {
-  Package,
-  Truck,
-  CreditCard,
-  MapPin,
-  Phone,
-  Mail,
-  Calendar,
-  Check,
-  Star,
-  ArrowLeft
-} from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+    ArrowLeft,
+    Calendar,
+    Check,
+    CreditCard,
+    Mail,
+    MapPin,
+    Package,
+    Phone,
+    Star,
+    Truck
+} from 'lucide-react';
 
 // TypeScript interfaces
 interface OrderItem {

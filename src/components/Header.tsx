@@ -1,5 +1,4 @@
 'use client';
-import { ModeToggle } from '@/components/ModeToggle';
 import SubHeader from '@/components/Subheader';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import useUserStore from '@/store/userStore';
 import { logout } from '@/utils/auth';
 import { useKeycloak } from '@react-keycloak/web';
-import { Bell, Menu, ShoppingCart, Zap, User } from 'lucide-react';
+import { Bell, Menu, ShoppingCart, User, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 const Header = () => {

@@ -1,11 +1,8 @@
-import axios, { HttpStatusCode } from 'axios';
-import { getAccessToken, getUserInfo, logout } from './auth';
+import axios from 'axios';
+import { getAccessToken } from './auth';
 import { stringUtils } from './stringUtils';
-import type { UserInfo } from '@/types';
-import useUserStore from '@/store/userStore';
 
 let cachedToken: string | null = null;
-let cachedUserInfo: UserInfo | null = null;
 
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:8222',

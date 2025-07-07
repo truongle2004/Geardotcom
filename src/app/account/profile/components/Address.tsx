@@ -33,26 +33,21 @@ const Address = () => {
     search: ''
   });
 
-  const {
-    data,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    isLoading
-  } = useInfiniteQuery({
-    queryKey: ['address-paginated', sortOption.sort, sortOption.search],
-    queryFn: ({ pageParam = Constant.DEFAULT_PAGE_NUMBER }) =>
-      getUserAddressAPI({
-        page: pageParam,
-        size: 5,
-        sort: sortOption.sort,
-        search: sortOption.search
-      }),
-    getNextPageParam: (lastPage) =>
-      lastPage?.data.hasNext ? lastPage?.data.currentPage + 1 : undefined,
-    initialPageParam: Constant.DEFAULT_PAGE_NUMBER,
-    enabled: userInfo.sub !== ''
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ['address-paginated', sortOption.sort, sortOption.search],
+      queryFn: ({ pageParam = Constant.DEFAULT_PAGE_NUMBER }) =>
+        getUserAddressAPI({
+          page: pageParam,
+          size: 5,
+          sort: sortOption.sort,
+          search: sortOption.search
+        }),
+      getNextPageParam: (lastPage) =>
+        lastPage?.data.hasNext ? lastPage?.data.currentPage + 1 : undefined,
+      initialPageParam: Constant.DEFAULT_PAGE_NUMBER,
+      enabled: userInfo.sub !== ''
+    });
   const paginatedData = data?.pages.flatMap((page) => page.data.content) || [];
 
   const handleSort = (field: string) => {
