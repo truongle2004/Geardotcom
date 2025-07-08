@@ -36,3 +36,7 @@ export enum TabProfileEnum {
   MANAGE_ORDER = 'manage-order',
   ACCOUNT_INFO = 'account-info'
 }
+
+export enum ErrorMessage {
+    NETWORK_ERROR = 'Network Error',
+}

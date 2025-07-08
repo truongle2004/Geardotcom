@@ -4,6 +4,7 @@ import { deleteCartItem, getUserCartAPI } from '@/apis/cart';
 import { addProductToWishlist } from '@/apis/wishlist';
 import CartItem from '@/components/CartItem';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import MaintenanceAlert from '@/components/MaintanceAlert';
 import NoDataAlert from '@/components/NoDataAlert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
+import { ErrorMessage } from '@/enums/enums';
 import useUserStore from '@/store/userStore';
 import { toastError, toastSuccess } from '@/utils/toastify';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
@@ -28,6 +30,8 @@ import {
   Trash2
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { isErrored } from 'stream';
+import { es } from 'zod/v4/locales';
 
 const Cart = () => {
   const [voucherCode, setVoucherCode] = useState('');
@@ -174,6 +178,14 @@ const Cart = () => {
     addProductToWishlistMutation(productId);
   };
 
+  if (
+    error &&
+    error instanceof AxiosError &&
+    error.message === ErrorMessage.NETWORK_ERROR.toString()
+  ) {
+    return <MaintenanceAlert />;
+  }
+
   return (
     <>
       <UnAuthorizedAlert
@@ -181,7 +193,9 @@ const Cart = () => {
         isOpen={isOpenUnauthorizedAlert}
       />
       {(isLoading || isDeletingPending) && <LoadingOverlay />}
-      {isError && cartItemsData.length === 0 ? (
+      {isError &&
+      cartItemsData.length === 0 &&
+      error.message !== ErrorMessage.NETWORK_ERROR.toString() ? (
         <NoDataAlert />
       ) : (
         <section className="py-8 md:py-16 antialiased min-h-screen">

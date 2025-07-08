@@ -46,6 +46,8 @@ import {
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Slider } from '@/components/ui/slider';
+import { ErrorMessage } from '@/enums/enums';
+import MaintenanceAlert from '@/components/MaintanceAlert';
 
 const HEIGHT_DROP_DOWN = 'h-[300px]';
 
@@ -146,7 +148,7 @@ const ProductsPage = () => {
     }).format(price);
   };
 
-  const { data: listVendor } = useQuery({
+  const { data: listVendor, error: vendorError } = useQuery({
     queryKey: ['vendors'],
     queryFn: () => getAllVendor()
   });
@@ -199,7 +201,13 @@ const ProductsPage = () => {
   };
 
   // Updated query to include price filters
-  const { data, isLoading, isSuccess, isLoadingError } = useQuery({
+  const {
+    data,
+    isLoading,
+    isSuccess,
+    isLoadingError,
+    error: listProductError
+  } = useQuery({
     queryKey: ['products', pageNumber, sortOption],
     queryFn: () =>
       getProductAPI({
@@ -375,7 +383,7 @@ const ProductsPage = () => {
     await addProductToCartMutation({ productId, quantity });
   };
 
-  const { data: categories } = useQuery({
+  const { data: categories, error: cateogryError } = useQuery({
     queryKey: ['categories'],
     queryFn: getAllProductCategoryAPI
   });
@@ -648,6 +656,13 @@ const ProductsPage = () => {
       );
     }
   };
+
+  const isNetworkError = (error: unknown): boolean =>
+    error instanceof AxiosError && error.message === ErrorMessage.NETWORK_ERROR;
+
+  if ([vendorError, cateogryError, listProductError].some(isNetworkError)) {
+    return <MaintenanceAlert />;
+  }
 
   return (
     <>
