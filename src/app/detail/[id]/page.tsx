@@ -2,7 +2,6 @@
 
 import { addProductToCart } from '@/apis/cart';
 import { getProductDetailAPI } from '@/apis/product';
-import Header from '@/components/Header';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 // Loading skeleton components
 const ImageSkeleton = () => (
@@ -147,11 +146,27 @@ const ProductDetailPage = () => {
     'Giá cả hợp lý'
   ];
 
+  useEffect(() => {
+    const handleSelection = () => {
+      const selection = window.getSelection();
+      if (selection && selection.toString().length > 0) {
+        console.log('User selected text:', selection.toString());
+      }
+    };
+
+    document.addEventListener('mouseup', handleSelection);
+    document.addEventListener('keyup', handleSelection);
+
+    return () => {
+      document.removeEventListener('mouseup', handleSelection);
+      document.removeEventListener('keyup', handleSelection);
+    };
+  }, []);
+
   return (
     <>
       <UnAuthorizedAlert isOpen={isOpenDialog} onClose={handleCloseDialog} />
       {isLoading && <LoadingOverlay />}
-      <Header />
       <div className="min-h-screen from-slate-50 to-white pt-20">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

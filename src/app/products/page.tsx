@@ -291,18 +291,9 @@ const ProductsPage = () => {
     }
   }, [searchParams]);
 
-  const handleLoadmore = () => {
-    if (
-      data?.data?.totalPages !== undefined &&
-      pageNumber < data?.data?.totalPages
-    ) {
-      setPageNumber(pageNumber + 1);
-    }
-  };
-
   const handlePageChange = (page: number) => {
     setPageNumber(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handlePreviousPage = () => {
@@ -316,6 +307,8 @@ const ProductsPage = () => {
       handlePageChange(pageNumber + 1);
     }
   };
+
+  console.log(window.getSelection());
 
   const generatePaginationNumbers = () => {
     const totalPages = data?.data?.totalPages || 1;
@@ -665,14 +658,6 @@ const ProductsPage = () => {
           <ErrorAlert />
         ) : (
           <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-            {/* Header */}
-            <div className="mb-8">
-              <div className="flex items-center gap-2 mb-4">
-                <Grid className="w-6 h-6 text-blue-600" />
-                <h1 className="text-2xl font-bold">Sản phẩm Gaming</h1>
-              </div>
-              <p>Khám phá hàng gaming chất lượng cao</p>
-            </div>
             {/* Filters */}
             <div className="rounded-lg p-4 mb-6">
               <div className="flex items-center gap-2 mb-4">

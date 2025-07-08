@@ -13,6 +13,7 @@ import { logout } from '@/utils/auth';
 import { useKeycloak } from '@react-keycloak/web';
 import { Bell, Menu, ShoppingCart, User, Zap } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import ButtonLoader from './ButtonLoader';
 
 const Header = () => {
   const { keycloak } = useKeycloak();
@@ -90,19 +91,23 @@ const Header = () => {
             {/* <ModeToggle /> */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center gap-2 cursor-pointer border border-gray-300 rounded-md px-1 py-1">
-                  <User className="w-5 h-5" />
-                  {userInfo?.preferred_username ? (
-                    <div>
-                      <p className="text-sm">xin chao</p>
-                      <p className="text-sm">{userInfo.preferred_username}</p>
-                    </div>
-                  ) : (
-                    <div>
-                      <p className="text-sm">Đăng nhập</p>
-                    </div>
-                  )}
-                </div>
+                {keycloak.didInitialize ? (
+                  <div className="flex items-center gap-2 cursor-pointer border border-gray-300 rounded-md px-1 py-1">
+                    <User className="w-5 h-5" />
+                    {userInfo?.preferred_username ? (
+                      <div>
+                        <p className="text-sm">xin chao</p>
+                        <p className="text-sm">{userInfo.preferred_username}</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="text-sm">Đăng nhập</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <ButtonLoader />
+                )}
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {keycloak.authenticated ? (
