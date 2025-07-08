@@ -109,6 +109,14 @@ export interface Ward extends BaseAddress {
   districtCode: number;
 }
 
+export interface Message {
+  id: number;
+  variant: 'sent' | 'received';
+  avatar: string;
+  message: string;
+  timestamp: Date;
+}
+
 export interface Province extends BaseAddress {}
 
 export interface PaginatedSelectProps {
