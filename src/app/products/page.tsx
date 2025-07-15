@@ -4,7 +4,6 @@ import {
   getAllVendor,
   getProductAPI
 } from '@/apis/product';
-import EventPosterDialog from '@/components/EventPosterDialog';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import MaintenanceAlert from '@/components/MaintanceAlert';
 import ErrorAlert from '@/components/NoDataAlert';
@@ -19,6 +18,7 @@ import { useEffect, useState } from 'react';
 import FilterContainer from './components/FilterContainer';
 import ProductGrid from './components/ProductGrid';
 import ProductPagination from './components/ProductPagination';
+import EventPosterDialog from '@/components/EventPosterDialog';
 
 const HEIGHT_DROP_DOWN = 'h-[300px]';
 
