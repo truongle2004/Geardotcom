@@ -1,25 +1,18 @@
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { RouteEnum } from '@/enums/enums';
 import type { Product } from '@/types';
 import { convertVND } from '@/utils/vnd';
-import { Eye, Monitor, ShoppingCart, Star } from 'lucide-react';
+import { Monitor, Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 
 interface ProductCardProps {
   product: Product;
-  handleAddToCart: (id: string, quantity: number) => void;
 }
 
-const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
+const ProductCard: FC<ProductCardProps> = ({ product }) => {
   return (
     <Card className="group hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
       <CardHeader className="p-0">
@@ -86,7 +79,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
         </div>
       </CardContent>
 
-      <CardFooter className="p-3 pt-0 flex gap-2">
+      {/* <CardFooter className="p-3 pt-0 flex gap-2">
         <Button
           className="flex-1 text-xs"
           size="sm"
@@ -98,7 +91,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
         <Button variant="outline" size="sm" className="px-2">
           <Eye className="w-3 h-3" />
         </Button>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };

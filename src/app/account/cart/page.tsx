@@ -20,14 +20,14 @@ import { toastError, toastSuccess } from '@/utils/toastify';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
-    ArrowRight,
-    CreditCard,
-    Gift,
-    Loader2,
-    Package,
-    ShoppingCart,
-    Tag,
-    Trash2
+  ArrowRight,
+  CreditCard,
+  Gift,
+  Loader2,
+  Package,
+  ShoppingCart,
+  Tag,
+  Trash2
 } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -70,7 +70,10 @@ const Cart = () => {
       return !lastPage?.data?.last ? allPages.length + 1 : undefined;
     },
     enabled:
-      userInfo.sub !== undefined && userInfo.sub !== null && userInfo.sub !== ''
+      userInfo.sub !== undefined &&
+      userInfo.sub !== null &&
+      userInfo.sub !== '',
+    retry: false
   });
 
   const cartItemsData = useMemo(() => {
@@ -159,7 +162,6 @@ const Cart = () => {
       handleOpenUnauthorizedAlert();
     }
   }, [error]);
-
 
   const { mutate: addProductToWishlistMutation } = useMutation({
     mutationKey: ['addProductToWishlist'],

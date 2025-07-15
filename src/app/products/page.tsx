@@ -23,6 +23,7 @@ import MaintenanceAlert from '@/components/MaintanceAlert';
 import FilterContainer from './components/FilterContainer';
 import ProductGrid from './components/ProductGrid';
 import ProductPagination from './components/ProductPagination';
+import EventPosterDialog from '@/components/EventPosterDialog';
 
 const HEIGHT_DROP_DOWN = 'h-[300px]';
 
@@ -201,10 +202,6 @@ const ProductsPage = () => {
     setIsOpenDialog(false);
   };
 
-  const handleOpenDialog = () => {
-    setIsOpenDialog(true);
-  };
-
   // Queries
   const { data: listVendor, error: vendorError } = useQuery({
     queryKey: ['vendors'],
@@ -238,37 +235,6 @@ const ProductsPage = () => {
     enabled: true,
     placeholderData: keepPreviousData
   });
-
-  // Mutations
-  const { mutateAsync: addProductToCartMutation } = useMutation({
-    mutationFn: (data: { productId: string; quantity: number }) =>
-      addProductToCart(data.productId, data.quantity),
-    onSuccess: (response) => {
-      if (response.httpStatus === 409) {
-        toastWarning(response.data);
-        return;
-      }
-      if (stringUtils.isNotNullAndEmpty(response.data)) {
-        toastSuccess(response.data);
-      }
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toastError('Thêm sản phẩm vào giỏ hàng thất bại');
-      }
-    }
-  });
-
-  const handleAddProductToCart = async (
-    productId: string,
-    quantity: number
-  ) => {
-    if (!keycloak.authenticated) {
-      handleOpenDialog();
-      return;
-    }
-    await addProductToCartMutation({ productId, quantity });
-  };
 
   // Effects
   useEffect(() => {
@@ -331,6 +297,10 @@ const ProductsPage = () => {
 
   return (
     <>
+      <EventPosterDialog
+        posterUrl="https://file.hstatic.net/200000722513/file/hssv_popup_838cebd1e40c4080a064c83efca94d1c_grande.jpg"
+        alt="test"
+      />
       <UnAuthorizedAlert isOpen={isOpenDialog} onClose={handleCloseDialog} />
       <div className="min-h-screen pt-16">
         {isLoading && <LoadingOverlay />}
@@ -363,11 +333,7 @@ const ProductsPage = () => {
             />
 
             {/* Products Grid */}
-            <ProductGrid
-              products={listProduct}
-              isLoading={isLoading}
-              onAddToCart={handleAddProductToCart}
-            />
+            <ProductGrid products={listProduct} isLoading={isLoading} />
 
             {/* Pagination */}
             <ProductPagination
