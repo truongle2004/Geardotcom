@@ -54,7 +54,6 @@ const ChatPopup: React.FC = () => {
     setMessages((prev) => [...prev, newMessage]);
     setInputValue('');
 
-    // Simulate AI response
     setIsTyping(true);
     setTimeout(() => {
       setIsTyping(false);
@@ -182,8 +181,6 @@ const ChatPopup: React.FC = () => {
                 <div className="flex space-x-2">
                   <ChatInput
                     value={inputValue}
-                    onChange={handleInputChange}
-                    onKeyPress={handleKeyPress}
                     placeholder="Type your message..."
                     className="flex-1 text-sm"
                   />

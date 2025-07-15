@@ -14,7 +14,7 @@ import {
 import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import keycloak from '@/config/keycloakConfig';
 import { stringUtils } from '@/utils/stringUtils';
-import { toastError, toastSuccess } from '@/utils/toastify';
+import { toastError, toastSuccess, toastWarning } from '@/utils/toastify';
 import { convertVND } from '@/utils/vnd';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -87,6 +87,10 @@ const ProductDetailPage = () => {
       mutationFn: (data: { productId: string; quantity: number }) =>
         addProductToCart(data.productId, data.quantity),
       onSuccess: (response) => {
+        if (response.httpStatus === 409) {
+          toastWarning(response.data);
+          return;
+        }
         if (stringUtils.isNotNullAndEmpty(response.data)) {
           toastSuccess(response.data);
         }

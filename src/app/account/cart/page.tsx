@@ -14,24 +14,23 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
-import { ErrorMessage } from '@/enums/enums';
+import { ErrorMessage, RouteEnum } from '@/enums/enums';
 import useUserStore from '@/store/userStore';
 import { toastError, toastSuccess } from '@/utils/toastify';
 import { useInfiniteQuery, useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import {
-  ArrowRight,
-  CreditCard,
-  Gift,
-  Loader2,
-  Package,
-  ShoppingCart,
-  Tag,
-  Trash2
+    ArrowRight,
+    CreditCard,
+    Gift,
+    Loader2,
+    Package,
+    ShoppingCart,
+    Tag,
+    Trash2
 } from 'lucide-react';
+import Link from 'next/link';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { isErrored } from 'stream';
-import { es } from 'zod/v4/locales';
 
 const Cart = () => {
   const [voucherCode, setVoucherCode] = useState('');
@@ -128,7 +127,11 @@ const Cart = () => {
   };
 
   const handleDeleteCartItem = (id: string) => {
-    deleteCartItemMutation(id);
+    deleteCartItemMutation([id]);
+  };
+
+  const handleDeleteCartSelected = () => {
+    deleteCartItemMutation(Array.from(selectedItems));
   };
 
   const handleSelectedCart = (id: string, isChecked: boolean) => {
@@ -141,10 +144,6 @@ const Cart = () => {
       }
       return newSet;
     });
-  };
-
-  const handleDeleteSelected = () => {
-    console.log('Delete selected items:', Array.from(selectedItems));
   };
 
   const selectedItemsTotal = useMemo(() => {
@@ -160,6 +159,7 @@ const Cart = () => {
       handleOpenUnauthorizedAlert();
     }
   }, [error]);
+
 
   const { mutate: addProductToWishlistMutation } = useMutation({
     mutationKey: ['addProductToWishlist'],
@@ -329,7 +329,7 @@ const Cart = () => {
                         <Button
                           variant="destructive"
                           size="sm"
-                          onClick={handleDeleteSelected}
+                          onClick={handleDeleteCartSelected}
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
                           Xóa đã chọn
@@ -354,10 +354,12 @@ const Cart = () => {
                       <p className="text-gray-500 mb-4">
                         Thêm sản phẩm để bắt đầu mua sắm
                       </p>
-                      <Button>
-                        Tiếp tục mua sắm
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
+                      <Link href={RouteEnum.PRODUCTS}>
+                        <Button>
+                          Tiếp tục mua sắm
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Button>
+                      </Link>
                     </CardContent>
                   </Card>
                 ) : (

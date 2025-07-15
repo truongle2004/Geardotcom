@@ -10,7 +10,8 @@ export enum SortDirection {
 
 export enum RouteEnum {
   DETAIL = '/detail',
-  PRODUCTS = '/products'
+  PRODUCTS = '/products',
+  ACCOUNT = '/account'
 }
 
 export enum SortOption {
@@ -38,5 +39,5 @@ export enum TabProfileEnum {
 }
 
 export enum ErrorMessage {
-    NETWORK_ERROR = 'Network Error',
+  NETWORK_ERROR = 'Network Error'
 }

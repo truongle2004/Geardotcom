@@ -1,5 +1,6 @@
 'use client';
 
+import Footer from '@/components/Footer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,17 +14,14 @@ import {
   Heart,
   Keyboard,
   Laptop,
-  Menu,
   Monitor,
   Mouse,
   Play,
-  Search,
   Shield,
   ShoppingCart,
   Smartphone,
   Star,
   Truck,
-  X,
   Zap
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -522,6 +520,7 @@ export default function Homepage() {
       </section>
 
       {/* Footer */}
+      <Footer />
     </div>
   );
 }

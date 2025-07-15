@@ -25,7 +25,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
       <CardHeader className="p-0">
         {/* Product Image */}
         <div className="relative overflow-hidden rounded-t-lg bg-gradient-to-br from-gray-100 to-gray-200 aspect-[4/3]">
-          <Link href={`${RouteEnum.DETAIL}/${product.id}`}>
+          <Link href={`${RouteEnum.DETAIL}/${product.id}/${product.handle}`}>
             <div className="absolute inset-0 flex items-center justify-center">
               {product.productImage ? (
                 <Image
@@ -58,7 +58,7 @@ const ProductCard: FC<ProductCardProps> = ({ product, handleAddToCart }) => {
       </CardHeader>
 
       <CardContent className="p-3 flex-grow flex flex-col">
-        <Link href={`${RouteEnum.DETAIL}/${product.id}`}>
+        <Link href={`${RouteEnum.DETAIL}/${product.id}/${product.handle}`}>
           <h3 className="text-sm font-semibold mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors leading-tight">
             {product.title}
           </h3>

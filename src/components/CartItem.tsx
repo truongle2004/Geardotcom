@@ -9,6 +9,9 @@ import { Card, CardContent } from './ui/card';
 import { Checkbox } from './ui/checkbox';
 import { Input } from './ui/input';
 import { convertVND } from '@/utils/vnd';
+import { useRouter } from 'next/navigation';
+import { RouteEnum } from '@/enums/enums';
+import Link from 'next/link';
 
 interface CartItemProps {
   cartItem: CartItemType;
@@ -98,9 +101,13 @@ const CartItem: FC<CartItemProps> = ({
               {/* Product Info */}
               <div className="w-full min-w-0 flex-1 space-y-3 md:order-2 md:max-w-md">
                 <div>
-                  <h3 className="font-semibold text-lg text-gray-900 dark:text-white line-clamp-2 leading-tight">
-                    {cartItem?.productTitle}
-                  </h3>
+                  <Link
+                    href={`${RouteEnum.DETAIL}/${cartItem?.productId}/${cartItem.handle}`}
+                  >
+                    <h3 className="font-semibold text-lg text-gray-900 dark:text-white line-clamp-2 leading-tight cursor-pointer hover:text-blue-600">
+                      {cartItem?.productTitle}
+                    </h3>
+                  </Link>
                   <div className="flex items-center gap-2 mt-2">
                     <span className="text-sm font-medium text-primary">
                       {convertVND(cartItem?.price)}

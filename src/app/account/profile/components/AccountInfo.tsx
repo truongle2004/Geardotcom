@@ -169,7 +169,7 @@ const AccountInfo = () => {
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
-                        className={`w-full justify-between text-left font-normal ${
+                        className={`w-full justify-between text-left font-normal font ${
                           !field.value ? 'text-muted-foreground' : ''
                         } ${errors.birthDate ? 'border-red-500' : ''}`}
                       >

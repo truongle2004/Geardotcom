@@ -12,9 +12,12 @@ export const addProductToCart = async (
   });
 
 export const deleteCartItem = async (
-  productId: string
-): Promise<ApiResponse<string>> =>
-  await axiosInstance.delete(`${ApiEnum.API_V1}/sale/carts/${productId}`);
+  ids: string[]
+): Promise<ApiResponse<string>> => {
+  const params = new URLSearchParams();
+  ids.forEach((id) => params.append('ids', id));
+  return await axiosInstance.delete(`${ApiEnum.API_V1}/sale/carts?${params.toString()}`);
+};
 
 export const getUserCartAPI = async (
   page: number,

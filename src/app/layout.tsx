@@ -7,8 +7,6 @@ import React from 'react';
 import './globals.css';
 import { ToastContainer } from 'react-toastify';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import ChatPopup from '@/components/ChatPopup';
 import ChatProvider from '@/providers/ChatProvider';
 
 const geistSans = Geist({
