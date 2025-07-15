@@ -39,7 +39,10 @@ const SubHeader = () => {
   return (
     <div className="w-full bg-gradient-to-r from-slate-50 to-gray-50 border-y border-gray-200 shadow-sm">
       {/* Desktop View */}
-      <div className="hidden lg:flex items-center justify-between px-4 xl:px-40 h-12">
+      <div
+        className="hidden lg:flex items-center justify-between px-4 xl:px-40"
+        style={{ height: '48px' }}
+      >
         {menuItems.map((item, index) => {
           const IconComponent = item.icon;
           return (

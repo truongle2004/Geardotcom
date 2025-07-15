@@ -1,25 +1,21 @@
-// Updated ProductsPage.tsx (main component) - Complete version
 'use client';
-import { addProductToCart } from '@/apis/cart';
 import {
   getAllProductCategoryAPI,
   getAllVendor,
   getProductAPI
 } from '@/apis/product';
+import EventPosterDialog from '@/components/EventPosterDialog';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import MaintenanceAlert from '@/components/MaintanceAlert';
 import ErrorAlert from '@/components/NoDataAlert';
 import UnAuthorizedAlert from '@/components/UnAuthorizedAlert';
 import { Constant } from '@/constant/constant';
-import { Category, Product, type Vendor } from '@/types';
-import { stringUtils } from '@/utils/stringUtils';
-import { toastError, toastSuccess, toastWarning } from '@/utils/toastify';
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
-import { AxiosError } from 'axios';
-import keycloak from '@/config/keycloakConfig';
-import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { ErrorMessage } from '@/enums/enums';
-import MaintenanceAlert from '@/components/MaintanceAlert';
+import { Category, Product, type Vendor } from '@/types';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import FilterContainer from './components/FilterContainer';
 import ProductGrid from './components/ProductGrid';
 import ProductPagination from './components/ProductPagination';
@@ -201,10 +197,6 @@ const ProductsPage = () => {
     setIsOpenDialog(false);
   };
 
-  const handleOpenDialog = () => {
-    setIsOpenDialog(true);
-  };
-
   // Queries
   const { data: listVendor, error: vendorError } = useQuery({
     queryKey: ['vendors'],
@@ -238,37 +230,6 @@ const ProductsPage = () => {
     enabled: true,
     placeholderData: keepPreviousData
   });
-
-  // Mutations
-  const { mutateAsync: addProductToCartMutation } = useMutation({
-    mutationFn: (data: { productId: string; quantity: number }) =>
-      addProductToCart(data.productId, data.quantity),
-    onSuccess: (response) => {
-      if (response.httpStatus === 409) {
-        toastWarning(response.data);
-        return;
-      }
-      if (stringUtils.isNotNullAndEmpty(response.data)) {
-        toastSuccess(response.data);
-      }
-    },
-    onError: (error) => {
-      if (error instanceof AxiosError) {
-        toastError('Thêm sản phẩm vào giỏ hàng thất bại');
-      }
-    }
-  });
-
-  const handleAddProductToCart = async (
-    productId: string,
-    quantity: number
-  ) => {
-    if (!keycloak.authenticated) {
-      handleOpenDialog();
-      return;
-    }
-    await addProductToCartMutation({ productId, quantity });
-  };
 
   // Effects
   useEffect(() => {
@@ -331,6 +292,10 @@ const ProductsPage = () => {
 
   return (
     <>
+      <EventPosterDialog
+        posterUrl="https://file.hstatic.net/200000722513/file/hssv_popup_838cebd1e40c4080a064c83efca94d1c_grande.jpg"
+        alt="test"
+      />
       <UnAuthorizedAlert isOpen={isOpenDialog} onClose={handleCloseDialog} />
       <div className="min-h-screen pt-16">
         {isLoading && <LoadingOverlay />}
@@ -363,11 +328,7 @@ const ProductsPage = () => {
             />
 
             {/* Products Grid */}
-            <ProductGrid
-              products={listProduct}
-              isLoading={isLoading}
-              onAddToCart={handleAddProductToCart}
-            />
+            <ProductGrid products={listProduct} isLoading={isLoading} />
 
             {/* Pagination */}
             <ProductPagination
