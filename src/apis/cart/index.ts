@@ -1,5 +1,10 @@
 import { ApiEnum, SortDirection } from '@/enums/enums';
-import type { ApiResponse, CartItemType, PaginatedResponse } from '@/types';
+import type {
+  PaymentRepsonse,
+  ApiResponse,
+  CartItemType,
+  PaginatedResponse
+} from '@/types';
 import axiosInstance from '@/utils/axiosInstance';
 
 export const addProductToCart = async (
@@ -16,7 +21,9 @@ export const deleteCartItem = async (
 ): Promise<ApiResponse<string>> => {
   const params = new URLSearchParams();
   ids.forEach((id) => params.append('ids', id));
-  return await axiosInstance.delete(`${ApiEnum.API_V1}/sale/carts?${params.toString()}`);
+  return await axiosInstance.delete(
+    `${ApiEnum.API_V1}/sale/carts?${params.toString()}`
+  );
 };
 
 export const getUserCartAPI = async (
@@ -31,3 +38,14 @@ export const getUserCartAPI = async (
       direction: sortDirection
     }
   });
+
+export const createOrderAPI = async (
+  items: { quantity: number; productId: string }[]
+): Promise<ApiResponse<PaymentRepsonse>> => {
+  return await axiosInstance.post(
+    `${ApiEnum.API_V1}/sale/orders/create-order`,
+    {
+      items
+    }
+  );
+};

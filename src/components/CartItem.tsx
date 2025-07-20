@@ -17,35 +17,46 @@ interface CartItemProps {
   cartItem: CartItemType;
   isSelected: boolean;
   isPendingDelete: boolean;
-  handleSelectCart: (id: string, isChecked: boolean) => void;
+  selectedQuantity: number;
+  handleSelectCart: (id: string, isChecked: boolean, quantity: number) => void;
   handleDeleteItem: (id: string) => void;
   handleAddProductToWishlist: (productId: string) => void;
+  handleQuantityChange: (id: string, quantity: number) => void;
 }
 
 const CartItem: FC<CartItemProps> = ({
   cartItem,
   isSelected,
   isPendingDelete: isLoadingDelete,
+  selectedQuantity,
   handleDeleteItem,
   handleSelectCart,
-  handleAddProductToWishlist
+  handleAddProductToWishlist,
+  handleQuantityChange
 }) => {
   const [quantity, setQuantity] = useState(cartItem?.quantity || 1);
 
   const handleCheckboxChange = () => {
-    handleSelectCart(cartItem.id, !isSelected);
+    handleSelectCart(cartItem.id, !isSelected, quantity);
   };
 
-  const handleQuantityChange = async (newQuantity: number) => {
+  const handleQuantityChangeLocal = async (newQuantity: number) => {
     if (newQuantity < 1) return;
 
     setQuantity(newQuantity);
+
+    // Update the selected quantity if this item is selected
+    if (isSelected) {
+      handleQuantityChange(cartItem.id, newQuantity);
+    }
   };
 
-  const incrementQuantity = () => handleQuantityChange(quantity + 1);
-  const decrementQuantity = () => handleQuantityChange(quantity - 1);
+  const incrementQuantity = () => handleQuantityChangeLocal(quantity + 1);
+  const decrementQuantity = () => handleQuantityChangeLocal(quantity - 1);
 
-  const totalPrice = (cartItem?.price || 0) * quantity;
+  // Use selectedQuantity for calculation if item is selected, otherwise use local quantity
+  const displayQuantity = isSelected ? selectedQuantity : quantity;
+  const totalPrice = (cartItem?.price || 0) * displayQuantity;
 
   return (
     <Card
@@ -157,10 +168,10 @@ const CartItem: FC<CartItemProps> = ({
                     <div className="w-16 text-center">
                       <Input
                         type="number"
-                        value={quantity}
+                        value={displayQuantity}
                         onChange={(e) => {
                           const newVal = parseInt(e.target.value) || 1;
-                          handleQuantityChange(newVal);
+                          handleQuantityChangeLocal(newVal);
                         }}
                         className="border-0 text-center focus-visible:ring-0 h-9 text-sm font-medium"
                         min="1"
@@ -182,7 +193,7 @@ const CartItem: FC<CartItemProps> = ({
                   <p className="text-lg font-bold text-gray-900 dark:text-white">
                     {convertVND(totalPrice)}
                   </p>
-                  {quantity > 1 && (
+                  {displayQuantity > 1 && (
                     <p className="text-sm text-gray-500">
                       {convertVND(cartItem?.price)} each
                     </p>

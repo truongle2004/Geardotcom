@@ -1,6 +1,6 @@
 'use client';
 
-import { deleteCartItem, getUserCartAPI } from '@/apis/cart';
+import { createOrderAPI, deleteCartItem, getUserCartAPI } from '@/apis/cart';
 import { addProductToWishlist } from '@/apis/wishlist';
 import CartItem from '@/components/CartItem';
 import LoadingOverlay from '@/components/LoadingOverlay';
@@ -34,7 +34,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const Cart = () => {
   const [voucherCode, setVoucherCode] = useState('');
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [selectedItems, setSelectedItems] = useState<
+    Map<string, { quantity: number; productId: string }>
+  >(new Map());
+
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('name');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -54,7 +57,7 @@ const Cart = () => {
 
   const {
     data,
-    isLoading,
+    isLoading: isLoadingCartItems,
     error,
     isError,
     fetchNextPage,
@@ -85,7 +88,7 @@ const Cart = () => {
   const someItemsSelected =
     selectedItems.size > 0 && selectedItems.size < cartItemsData!.length;
 
-  const { mutate: deleteCartItemMutation, isPending: isDeletingPending } =
+  const { mutate: deleteCartItemMutation, isPending: isPendingDeleteCartItem } =
     useMutation({
       mutationKey: ['deleteCartItem'],
       mutationFn: deleteCartItem,
@@ -95,6 +98,20 @@ const Cart = () => {
       },
       onError: (err) => {
         console.log(err);
+      }
+    });
+
+  const { mutate: createOrderMutation, isPending: isPendingCreateOrder } =
+    useMutation({
+      mutationKey: ['createOrder', selectedItems],
+      mutationFn: createOrderAPI,
+      onSuccess: (response) => {
+        if (response.httpStatus >= 400) {
+          toastError(response.data as unknown as string);
+          return;
+        } else {
+          window.location.href = response.data.url;
+        }
       }
     });
 
@@ -123,39 +140,76 @@ const Cart = () => {
 
   const handleSelectAll = () => {
     if (allItemsSelected) {
-      setSelectedItems(new Set());
+      setSelectedItems(new Map());
     } else {
-      setSelectedItems(new Set(cartItemsData!.map((item) => item.id)));
+      const newMap = new Map<string, { quantity: number; productId: string }>();
+      cartItemsData.forEach((item) => {
+        newMap.set(item.id, {
+          quantity: item.quantity,
+          productId: item.productId
+        });
+      });
+      setSelectedItems(newMap);
     }
   };
-
   const handleDeleteCartItem = (id: string) => {
     deleteCartItemMutation([id]);
   };
 
   const handleDeleteCartSelected = () => {
-    deleteCartItemMutation(Array.from(selectedItems));
+    deleteCartItemMutation(Array.from(selectedItems.keys()));
   };
 
-  const handleSelectedCart = (id: string, isChecked: boolean) => {
+  const handleSelectedCart = (
+    id: string,
+    isChecked: boolean,
+    quantity: number
+  ) => {
     setSelectedItems((prev) => {
-      const newSet = new Set(prev);
+      const newMap = new Map(prev);
       if (isChecked) {
-        newSet.add(id);
+        const cartItem = cartItemsData.find((item) => item.id === id);
+        if (cartItem) {
+          newMap.set(id, { quantity, productId: cartItem.productId });
+        }
       } else {
-        newSet.delete(id);
+        newMap.delete(id);
       }
-      return newSet;
+      return newMap;
+    });
+  };
+
+  const handleQuantityChange = (id: string, newQuantity: number) => {
+    setSelectedItems((prev) => {
+      const newMap = new Map(prev);
+      if (newMap.has(id)) {
+        const existing = newMap.get(id)!;
+        newMap.set(id, { ...existing, quantity: newQuantity });
+      }
+      return newMap;
     });
   };
 
   const selectedItemsTotal = useMemo(() => {
-    return cartItemsData!
-      .filter((item) => selectedItems.has(item?.id))
-      .reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItemsData
+      .filter((item) => selectedItems.has(item.id))
+      .reduce((total, item) => {
+        const selectedItem = selectedItems.get(item.id);
+        const selectedQuantity = selectedItem?.quantity || item.quantity;
+        return total + item.price * selectedQuantity;
+      }, 0);
   }, [cartItemsData, selectedItems]);
-
   const selectedItemsCount = selectedItems.size;
+
+  const handleCreateOrder = () => {
+    const selectedItemsArray = Array.from(selectedItems.values()).map(
+      ({ productId, quantity }) => ({
+        productId,
+        quantity
+      })
+    );
+    createOrderMutation(selectedItemsArray);
+  };
 
   useEffect(() => {
     if (error && error instanceof AxiosError) {
@@ -194,7 +248,9 @@ const Cart = () => {
         onClose={handleCloseUnauthorizedAlert}
         isOpen={isOpenUnauthorizedAlert}
       />
-      {(isLoading || isDeletingPending) && <LoadingOverlay />}
+      {(isLoadingCartItems ||
+        isPendingDeleteCartItem ||
+        isPendingCreateOrder) && <LoadingOverlay />}
       {isError &&
       cartItemsData.length === 0 &&
       error.message !== ErrorMessage.NETWORK_ERROR.toString() ? (
@@ -215,91 +271,6 @@ const Cart = () => {
                   </Badge>
                 )}
               </div>
-
-              {/* Search and Filter Bar */}
-              {/* <Card className="mb-6">
-                <CardContent className="p-4">
-                  <div className="flex flex-col sm:flex-row gap-4 items-center">
-                    <div className="relative flex-1">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                      <Input
-                        placeholder="Tìm kiếm sản phẩm..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="name">Tên</SelectItem>
-                          <SelectItem value="price">Giá</SelectItem>
-                          <SelectItem value="quantity">Số lượng</SelectItem>
-                        </SelectContent>
-                      </Select>
-
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={toggleSortOrder}
-                        className="shrink-0"
-                      >
-                        {sortOrder === 'asc' ? (
-                          <SortAsc className="h-4 w-4" />
-                        ) : (
-                          <SortDesc className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowFilters(!showFilters)}
-                      className="shrink-0"
-                    >
-                      <Filter className="h-4 w-4 mr-2" />
-                      Bộ lọc
-                    </Button>
-                  </div>
-
-                  {showFilters && (
-                    <div className="mt-4 pt-4 border-t">
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                          <label className="text-sm font-medium mb-2 block">
-                            Khoảng giá
-                          </label>
-                          <Select
-                            value={priceFilter}
-                            onValueChange={setPriceFilter}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all">Tất cả giá</SelectItem>
-                              <SelectItem value="0-25">
-                                0đ - 625.000đ
-                              </SelectItem>
-                              <SelectItem value="25-50">
-                                625.000đ - 1.250.000đ
-                              </SelectItem>
-                              <SelectItem value="50-100">
-                                1.250.000đ - 2.500.000đ
-                              </SelectItem>
-                              <SelectItem value="100">2.500.000đ+</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card> */}
             </div>
 
             {/* Selection Controls */}
@@ -346,7 +317,7 @@ const Cart = () => {
             <div className="md:gap-6 lg:flex lg:items-start xl:gap-8">
               {/* Cart Items */}
               <div className="mx-auto w-full flex-none lg:max-w-2xl xl:max-w-4xl">
-                {cartItemsData!.length === 0 && !isLoading ? (
+                {cartItemsData!.length === 0 && !isLoadingCartItems ? (
                   <Card className="text-center py-12">
                     <CardContent>
                       <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
@@ -370,11 +341,17 @@ const Cart = () => {
                       <CartItem
                         key={item?.id}
                         cartItem={item}
-                        isPendingDelete={isDeletingPending}
+                        isPendingDelete={isPendingDeleteCartItem}
                         isSelected={selectedItems.has(item?.id)}
+                        selectedQuantity={
+                          selectedItems.get(item?.id ?? '') ??
+                          item?.quantity ??
+                          1
+                        }
                         handleSelectCart={handleSelectedCart}
                         handleDeleteItem={handleDeleteCartItem}
                         handleAddProductToWishlist={handleAddProductToWishlist}
+                        handleQuantityChange={handleQuantityChange}
                       />
                     ))}
 
@@ -418,12 +395,6 @@ const Cart = () => {
                           Miễn phí
                         </span>
                       </div>
-                      {/* <div className="flex items-center justify-between">
-                        <span className="text-sm text-gray-500">Thuế</span>
-                        <span className="font-medium">
-                          {(selectedItemsTotal * 0.08).toLocaleString('vi-VN')}đ
-                        </span>
-                      </div> */}
                     </div>
 
                     <Separator />
@@ -439,6 +410,7 @@ const Cart = () => {
                       className="w-full"
                       size="lg"
                       disabled={selectedItemsCount === 0}
+                      onClick={handleCreateOrder}
                     >
                       <CreditCard className="mr-2 h-4 w-4" />
                       Tiến hành thanh toán ({selectedItemsCount})

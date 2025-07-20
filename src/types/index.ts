@@ -153,3 +153,9 @@ export interface UserAddressResponse {
   ward: string;
   addressType: string;
 }
+
+export interface PaymentRepsonse {
+  status: string;
+  message: string;
+  url: string;
+}
