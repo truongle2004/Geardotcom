@@ -159,3 +159,32 @@ export interface PaymentRepsonse {
   message: string;
   url: string;
 }
+
+export interface PaymentParamResponse {
+    id: string;
+    orderId: string;
+    vnpTxnRef: string;
+    vnpTransactionNo: string;
+    amount: string;
+    bankCode: string;
+    cardType: string;
+    payDate: string;
+    responseCode: string;
+    transactionStatus: string;
+    paymentStatus: string;
+}
+
+export interface PaymentParams {
+  vnp_Amount: string;
+  vnp_BankCode: string;
+  vnp_BankTranNo: string;
+  vnp_CardType: string;
+  vnp_OrderInfo: string;
+  vnp_PayDate: string;
+  vnp_ResponseCode: string;
+  vnp_TmnCode: string;
+  vnp_TransactionNo: string;
+  vnp_TransactionStatus: string;
+  vnp_TxnRef: string;
+  vnp_SecureHash: string;
+}
